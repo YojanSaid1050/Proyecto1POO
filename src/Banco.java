@@ -1,13 +1,12 @@
 import java.util.ArrayList;
 
 public class Banco {
-    // Atributos
+    
     private ArrayList<Cliente> clientes;
     private ArrayList<ProductoFinanciero> productosFinancieros;
     private ArrayList<Transaccion> transacciones;
     private ArrayList<ArchivoCSV> archivosCSV;
     
-    // Constructor
     public Banco() {
         clientes = new ArrayList<>();
         productosFinancieros = new ArrayList<>();
@@ -15,7 +14,6 @@ public class Banco {
         archivosCSV = new ArrayList<>();
     }
     
-    // Métodos
     public void agregarCliente(Cliente cliente) {
         clientes.add(cliente);
     }
@@ -30,7 +28,7 @@ public class Banco {
                 return cliente;
             }
         }
-        return null; // Cliente no encontrado
+        return null;
     }
     
     public void agregarProductoFinanciero(ProductoFinanciero producto) {
@@ -47,7 +45,7 @@ public class Banco {
                 return producto;
             }
         }
-        return null; // Producto financiero no encontrado
+        return null;
     }
     
     public void agregarTransaccion(Transaccion transaccion) {
