@@ -1,37 +1,34 @@
-import java.util.Date;
-
 public class Transaccion {
     private String tipo;
     private double monto;
-    private Date fecha;
+    private String tipoServicioPublico;
+    private String numeroReferencia;
 
     public Transaccion(String tipo, double monto) {
         this.tipo = tipo;
         this.monto = monto;
-        this.fecha = new Date();
+    }
+
+    public Transaccion(String tipo, double monto, String tipoServicioPublico, String numeroReferencia) {
+        this.tipo = tipo;
+        this.monto = monto;
+        this.tipoServicioPublico = tipoServicioPublico;
+        this.numeroReferencia = numeroReferencia;
     }
 
     public String getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
     public double getMonto() {
         return monto;
     }
 
-    public void setMonto(double monto) {
-        this.monto = monto;
+    public String getTipoServicioPublico() {
+        return tipoServicioPublico;
     }
 
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public String getNumeroReferencia() {
+        return numeroReferencia;
     }
 }
