@@ -1,26 +1,23 @@
 public class Seguro extends ProductoFinanciero {
-    private String tipo;
-    private double prima;
+    private String tipoSeguro;
+    private double primaSeguro;
 
-    public Seguro(int numeroCuenta, String tipo, double prima) {
-        super(numeroCuenta);
-        this.tipo = tipo;
-        this.prima = prima;
+    public Seguro(int numeroCuenta, double saldoInicial, String tipoSeguro, double primaSeguro) {
+        super(numeroCuenta, saldoInicial);
+        this.tipoSeguro = tipoSeguro;
+        this.primaSeguro = primaSeguro;
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getTipoSeguro() {
+        return tipoSeguro;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public double getPrimaSeguro() {
+        return primaSeguro;
     }
 
-    public double getPrima() {
-        return prima;
-    }
-
-    public void setPrima(double prima) {
-        this.prima = prima;
+    @Override
+    public void procesarTransaccion(Transaccion transaccion) {
+        // Implementar lógica específica para transacciones de seguro
     }
 }
