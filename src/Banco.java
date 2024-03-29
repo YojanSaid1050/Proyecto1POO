@@ -1,44 +1,59 @@
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Banco {
-    private List<Cliente> clientes;
+
+    private Map<String, Cliente> clientes; // HashMap con ID como clave
 
     public Banco() {
-        this.clientes = new ArrayList<>();
+        clientes = new HashMap<>();
     }
 
-    public void agregarCliente(Cliente cliente) {
-        clientes.add(cliente);
-    }
-
-    public List<Cliente> getClientes() {
-        return clientes;
-    }
-
-    public Cliente buscarClientePorId(int id) {
-        for (Cliente cliente : clientes) {
-            if (cliente.getNumeroCuenta() == id) {
-                return cliente;
-            }
+    public void agregarCliente(Cliente cliente) throws BancoException {
+        if (!clientes.containsKey(cliente.getId())) {
+            clientes.put(cliente.getId(), cliente);
+            System.out.println("Cliente agregado correctamente.");
+        } else {
+            throw new BancoException("El cliente ya existe en el banco.");
         }
-        return null;
     }
 
-    public void transferir(int cuentaOrigen, int cuentaDestino, double monto) {
-        Cliente clienteOrigen = buscarClientePorId(cuentaOrigen);
-        Cliente clienteDestino = buscarClientePorId(cuentaDestino);
+    public Cliente buscarCliente(String id) {
+        return clientes.get(id); // Busca por ID en el HashMap
+    }
 
-        if (clienteOrigen == null || clienteDestino == null) {
-            System.out.println("Error: Cuenta de origen o destino no encontrada.");
+    public Cliente buscarClientePorId(String id) throws BancoException {
+        Cliente cliente = buscarCliente(id);
+        if (cliente == null) {
+            throw new BancoException("Cliente no encontrado en el banco.");
+        }
+        return cliente;
+    }
+
+    public ArrayList<Cliente> getClientes() {
+        return new ArrayList<>(clientes.values());
+    }
+
+    public void realizarTransferencia(String idClienteOrigen, int numeroCuentaOrigen, double monto, int numeroCuentaDestino, String idClienteDestino, String nombreClienteDestino) {
+        Cliente clienteOrigen = buscarCliente(idClienteOrigen);
+        if (clienteOrigen == null) {
+            System.out.println("Cliente no encontrado en el banco.");
             return;
         }
 
-        for (ProductoFinanciero productoOrigen : clienteOrigen.getProductos()) {
-            if (productoOrigen instanceof CuentaAhorros || productoOrigen instanceof CuentaCorriente) {
-                productoOrigen.realizarTransferencia(cuentaDestino, monto);
-                break;
-            }
+        ProductoFinanciero cuentaOrigen = clienteOrigen.buscarProducto(numeroCuentaOrigen);
+        if (cuentaOrigen == null) {
+            System.out.println("Cuenta de origen no encontrada para el cliente.");
+            return;
         }
+
+        if (!(cuentaOrigen instanceof CuentaAhorros) && !(cuentaOrigen instanceof CuentaCorriente)) {
+            System.out.println("La cuenta de origen no es válida para transferencias.");
+            return;
+        }
+
+        Transaccion transferencia = new Transferencia(monto, numeroCuentaDestino, idClienteDestino, nombreClienteDestino);
+        cuentaOrigen.procesarTransaccion(transferencia);
     }
 }
