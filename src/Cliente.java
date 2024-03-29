@@ -1,46 +1,40 @@
-public class Cliente {
+import java.util.ArrayList;
+import java.util.List;
 
-    private int idCliente;
+public class Cliente {
     private String nombre;
-    private String direccion;
-    private int telefono;
-    
-    public Cliente(int idCliente, String nombre, String direccion, int telefono) {
-        this.idCliente = idCliente;
+    private int numeroCuenta;
+    private List<ProductoFinanciero> productos;
+    private List<Transaccion> transacciones;
+
+    public Cliente(String nombre, int numeroCuenta) {
         this.nombre = nombre;
-        this.direccion = direccion;
-        this.telefono = telefono;
+        this.numeroCuenta = numeroCuenta;
+        this.productos = new ArrayList<>();
+        this.transacciones = new ArrayList<>();
     }
-    
-    public int getIdCliente() {
-        return idCliente;
+
+    public void agregarProducto(ProductoFinanciero producto) {
+        productos.add(producto);
     }
-    
+
+    public void registrarTransaccion(Transaccion transaccion) {
+        transacciones.add(transaccion);
+    }
+
     public String getNombre() {
         return nombre;
     }
-    
-    public String getDireccion() {
-        return direccion;
+
+    public int getNumeroCuenta() {
+        return numeroCuenta;
     }
-    
-    public int getTelefono() {
-        return telefono;
+
+    public List<ProductoFinanciero> getProductos() {
+        return productos;
     }
-    
-    public void setIdCliente(int idCliente) {
-        this.idCliente = idCliente;
-    }
-    
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-    
-    public void setTelefono(int telefono) {
-        this.telefono = telefono;
+
+    public List<Transaccion> getTransacciones() {
+        return transacciones;
     }
 }
