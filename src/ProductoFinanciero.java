@@ -1,28 +1,21 @@
 public abstract class ProductoFinanciero {
-    
-    private String numeroProducto;
-    private double saldo;
+    private int numeroCuenta;
 
-    public ProductoFinanciero(String numeroProducto, double saldo) {
-        this.numeroProducto = numeroProducto;
-        this.saldo = saldo;
+    public ProductoFinanciero(int numeroCuenta) {
+        this.numeroCuenta = numeroCuenta;
     }
 
-    public abstract void realizarTransaccion(Transaccion transaccion);
-    
-    public String getNumeroProducto() {
-        return numeroProducto;
-    }
-    
-    public double getSaldo() {
-        return saldo;
-    }
-    
-    public void setNumeroProducto(String numeroProducto) {
-        this.numeroProducto = numeroProducto;
-    }
-    
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
+    public abstract void realizarConsignacion(double monto);
+
+    public abstract void realizarRetiro(double monto);
+
+    public abstract void realizarPago(double monto);
+
+    public abstract void realizarTransferencia(int cuentaDestino, double monto);
+
+    public abstract void realizarPagoTarjetaCredito(double monto);
+
+    public int getNumeroCuenta() {
+        return numeroCuenta;
     }
 }
