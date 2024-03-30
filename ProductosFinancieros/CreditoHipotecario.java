@@ -21,6 +21,17 @@ public class CreditoHipotecario extends ProductoFinanciero {
     }
 
     @Override
+    public String toString() {
+        return "Cuenta bancaria: " + getNumeroCuenta() + "\n" +
+               "Saldo: $" + getSaldo() + "\n" +
+               "Tipo de producto financiero: Crédito Hipotecario\n" +
+               "Monto del préstamo: $" + montoPrestamo + "\n" +
+               "Tasa de interés: " + (tasaInteres * 100) + "%\n" +
+               "Deuda restante: $" + deuda + "\n" +
+               "Retirado: " + (retirado ? "Sí" : "No") + "\n";
+    }
+
+    @Override
     public void procesarTransaccion(Transaccion transaccion) {
         if (transaccion.getTipo().equals("Retiro")) {
             if (retirado) {
