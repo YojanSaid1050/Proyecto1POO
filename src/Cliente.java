@@ -5,37 +5,39 @@ public class Cliente {
 
     private String nombre;
     private String apellido;
-    private String id; // Convertido a String para ser una clave única
-    private long numeroIdentificacion; // Cambiado a long
+    private String id;
+    private long numeroIdentificacion;
     private String telefono;
     private List<ProductoFinanciero> productos;
     private List<Transaccion> transacciones;
+    private static int contadorNumerosCuenta = 1000; // Comenzar desde 1000
 
-    public Cliente(String nombre, String apellido, String id, long numeroIdentificacion, String telefono) throws BancoException {
+    public Cliente(String nombre, String apellido, String id, String telefono, long numeroIdentificacion) throws BancoException {
         this.nombre = nombre;
         this.apellido = apellido;
         this.id = id;
         this.numeroIdentificacion = numeroIdentificacion;
-        
+        this.telefono = telefono;
+        this.productos = new ArrayList<>();
+        this.transacciones = new ArrayList<>();
+
         // Validar longitud del número de teléfono
         if (telefono.length() != 10) {
             throw new BancoException("El número de teléfono debe tener 10 dígitos.");
         }
-        
-        this.telefono = telefono;
-        this.productos = new ArrayList<>();
-        this.transacciones = new ArrayList<>();
     }
 
-    // Métodos restantes de la clase Cliente...
-
-
     public void agregarProducto(ProductoFinanciero producto) {
+        producto.setNumeroCuenta(getNextNumeroCuenta());
         productos.add(producto);
     }
 
     public void registrarTransaccion(Transaccion transaccion) {
         transacciones.add(transaccion);
+    }
+
+    public int getNextNumeroCuenta() {
+        return contadorNumerosCuenta++;
     }
 
     public String getNombre() {
@@ -106,11 +108,10 @@ public class Cliente {
         sb.append("Teléfono: ").append(telefono).append("\n");
         sb.append("Productos Financieros: \n");
         for (ProductoFinanciero producto : productos) {
-            sb.append("\t- ").append(producto).append("\n");
+            sb.append("\t- ").append(producto).append(" - Número de cuenta: ").append(producto.getNumeroCuenta()).append("\n");
         }
         return sb.toString();
     }
-
 
     @Override
     public int hashCode() {

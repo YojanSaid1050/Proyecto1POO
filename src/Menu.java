@@ -16,7 +16,8 @@ public class Menu {
             System.out.println("***** Menú *****");
             System.out.println("1. Agregar cliente");
             System.out.println("2. Mostrar información de clientes");
-            System.out.println("3. Salir");
+            System.out.println("3. Agregar producto financiero a cliente");
+            System.out.println("4. Salir");
             System.out.print("Ingrese su opción: ");
             opcion = scanner.nextInt();
 
@@ -28,12 +29,15 @@ public class Menu {
                     mostrarInfoClientes();
                     break;
                 case 3:
+                    agregarProductoFinancieroACliente();
+                    break;
+                case 4:
                     System.out.println("Saliendo del programa...");
                     break;
                 default:
                     System.out.println("Opción inválida. Por favor, ingrese un número válido.");
             }
-        } while (opcion != 3);
+        } while (opcion != 4);
     }
 
     private void agregarCliente() {
@@ -51,9 +55,8 @@ public class Menu {
             System.out.print("Apellido: ");
             String apellido = scanner.next();
             System.out.print("Número de Identificación: ");
-            int numIdentificacion = scanner.nextInt();
+            long numIdentificacion = scanner.nextLong();
 
-            // Verificar si el número de identificación ya está registrado con otro ID
             for (Cliente cliente : banco.getClientes()) {
                 if (cliente.getNumeroIdentificacion() == numIdentificacion && !cliente.getId().equals(id)) {
                     throw new BancoException("El número de identificación ingresado ya está registrado con otra ID.");
@@ -63,18 +66,62 @@ public class Menu {
             System.out.print("Teléfono: ");
             String telefono = scanner.next();
 
-            Cliente cliente = new Cliente(id, nombre, apellido, numIdentificacion, telefono);
+            Cliente cliente = new Cliente(nombre, apellido, id, telefono, numIdentificacion);
             banco.agregarCliente(cliente);
+            System.out.println("Cliente agregado correctamente. Su número de cuenta es: " + cliente.getNextNumeroCuenta());
         } catch (BancoException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
-
     private void mostrarInfoClientes() {
         System.out.println("***** Información de Clientes *****");
         for (Cliente cliente : banco.getClientes()) {
             System.out.println(cliente);
+        }
+    }
+
+    private void agregarProductoFinancieroACliente() {
+        try {
+            System.out.println("Ingrese el ID del cliente al que desea agregar el producto financiero:");
+            String idCliente = scanner.next();
+
+            Cliente cliente = banco.buscarCliente(idCliente);
+            if (cliente == null) {
+                throw new BancoException("El cliente con ID " + idCliente + " no existe en el banco.");
+            }
+
+            // Verificar si el cliente ya tiene un producto financiero del mismo tipo
+            System.out.println("Seleccione el tipo de producto financiero:");
+            System.out.println("1. Credito Hipotecario");
+            // Agrega más opciones según los tipos de productos financieros disponibles
+
+            int tipoProducto = scanner.nextInt();
+            if (cliente.tieneTipoProducto(CreditoHipotecario.class)) {
+                throw new BancoException("El cliente ya tiene un producto financiero del mismo tipo.");
+            }
+
+            // Crear el producto financiero y agregarlo al cliente
+            int numeroCuenta = cliente.getNextNumeroCuenta();
+            switch (tipoProducto) {
+                case 1:
+                    // Otros campos necesarios para crear el producto financiero
+                    System.out.print("Ingrese el monto del préstamo: ");
+                    double montoPrestamo = scanner.nextDouble();
+                    System.out.print("Ingrese la tasa de interés: ");
+                    double tasaInteres = scanner.nextDouble();
+
+                    // Crear el crédito hipotecario y agregarlo al cliente
+                    CreditoHipotecario creditoHipotecario = new CreditoHipotecario(numeroCuenta, 0, montoPrestamo, tasaInteres);
+                    cliente.agregarProducto(creditoHipotecario);
+                    System.out.println("Credito hipotecario agregado correctamente al cliente con ID " + idCliente);
+                    break;
+                // Agrega más casos para otros tipos de productos financieros
+                default:
+                    System.out.println("Opción no válida.");
+            }
+        } catch (BancoException e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
