@@ -1,5 +1,5 @@
-class PagoTarjetaCredito extends Transaccion {
+public class PagoTarjetaCredito extends Transaccion {
     public PagoTarjetaCredito(double monto) {
-        super("Pago Tarjeta Credito", monto);
+        super("Pago de Tarjeta de Crédito", monto);
     }
 }
