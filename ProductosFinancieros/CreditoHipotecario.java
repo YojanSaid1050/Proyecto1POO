@@ -22,13 +22,12 @@ public class CreditoHipotecario extends ProductoFinanciero {
 
     @Override
     public String toString() {
-        return "Cuenta bancaria: " + getNumeroCuenta() + "\n" +
+        return "Crédito Hipotecario:\n" +
                "Saldo: $" + getSaldo() + "\n" +
-               "Tipo de producto financiero: Crédito Hipotecario\n" +
                "Monto del préstamo: $" + montoPrestamo + "\n" +
-               "Tasa de interés: " + (tasaInteres * 100) + "%\n" +
+               "Tasa de interés: " + tasaInteres + "%\n" +
                "Deuda restante: $" + deuda + "\n" +
-               "Retirado: " + (retirado ? "Sí" : "No") + "\n";
+               "Retirado: " + (retirado ? "Sí" : "No");
     }
 
     @Override

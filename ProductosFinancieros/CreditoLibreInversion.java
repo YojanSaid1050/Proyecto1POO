@@ -20,6 +20,14 @@ public class CreditoLibreInversion extends ProductoFinanciero {
         return tasaInteres;
     }
 
+    public double getDeudaRestante() {
+        return deuda;
+    }
+
+    public boolean isRetirado() {
+        return retirado;
+    }
+
     @Override
     public void procesarTransaccion(Transaccion transaccion) {
         if (transaccion.getTipo().equals("Retiro")) {
@@ -44,5 +52,15 @@ public class CreditoLibreInversion extends ProductoFinanciero {
         } else {
             System.out.println("Tipo de transacción no válida para el crédito de libre inversión.");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Crédito de Libre Inversión:\n" +
+               "Saldo: $" + getSaldo() + "\n" +
+               "Monto del préstamo: $" + montoPrestamo + "\n" +
+               "Tasa de interés: " + tasaInteres + "%\n" +
+               "Deuda restante: $" + deuda + "\n" +
+               "Retirado: " + (retirado ? "Sí" : "No");
     }
 }
