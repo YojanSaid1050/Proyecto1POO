@@ -1,23 +1,26 @@
 public class CuentaAhorros extends ProductoFinanciero {
     private boolean conectadaTarjetaDebito;
     private double tasaInteres;
-    private double saldo;
 
-    public CuentaAhorros(int numeroCuenta, double saldoInicial, boolean conectadaTarjetaDebito) {
+    public CuentaAhorros(int numeroCuenta, double saldoInicial, boolean conectadaTarjetaDebito, double tasaInteres) {
         super(numeroCuenta, saldoInicial);
         this.conectadaTarjetaDebito = conectadaTarjetaDebito;
+        this.tasaInteres = tasaInteres;
     }
+
+    // Getters y setters para conectadaTarjetaDebito y tasaInteres
 
     public boolean isConectadaTarjetaDebito() {
         return conectadaTarjetaDebito;
     }
+    
+    public boolean tieneTarjetaDebitoConectada() {
+        return conectadaTarjetaDebito;
+    }
+
+
     public double getTasaInteres() {
         return this.tasaInteres;
-    }
-    public CuentaAhorros(int numeroCuenta, double tasaInteres, double saldoInicial) {
-        super(numeroCuenta);
-        this.tasaInteres = tasaInteres;
-        this.saldo = saldoInicial;
     }
 
     @Override
@@ -49,11 +52,11 @@ public class CuentaAhorros extends ProductoFinanciero {
             double monto = pagoServicio.getMonto();
             String tipoServicio = pagoServicio.getTipoServicioPublico();
             String numeroReferencia = pagoServicio.getNumeroReferencia();
-            
+
             if (monto > this.saldo) {
                 throw new IllegalArgumentException("Saldo insuficiente en la cuenta de ahorros para pagar el servicio público.");
             }
-            
+
             this.saldo -= monto;
             System.out.println("Se ha pagado $" + monto + " del servicio público '" + tipoServicio + "' con número de referencia '" + numeroReferencia + "' desde la cuenta de ahorros.");
         } else if (transaccion.getTipo().equals("Transferencia")) {
@@ -62,15 +65,22 @@ public class CuentaAhorros extends ProductoFinanciero {
             int numeroCuentaDestino = transferencia.getNumeroCuentaDestino();
             String idClienteDestino = transferencia.getIdClienteDestino();
             String nombreClienteDestino = transferencia.getNombreClienteDestino();
-            
+
             if (montoTransferencia > this.saldo) {
                 throw new IllegalArgumentException("Saldo insuficiente en la cuenta de ahorros para realizar la transferencia.");
             }
-            
+
             this.saldo -= montoTransferencia;
             System.out.println("Se ha transferido $" + montoTransferencia + " a la cuenta con número " + numeroCuentaDestino + " del cliente " + nombreClienteDestino + " (ID: " + idClienteDestino + ")");
         } else {
             System.out.println("Tipo de transacción no válida para la cuenta de ahorros.");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Cuenta de Ahorros:\n" +
+               "Saldo: $" + getSaldo() + "\n" +
+               "Tasa de interés: " + tasaInteres + "%";
     }
 }

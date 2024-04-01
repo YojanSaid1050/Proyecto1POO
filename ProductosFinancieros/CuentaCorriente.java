@@ -9,6 +9,7 @@ public class CuentaCorriente extends ProductoFinanciero {
     public double getSobregiroPermitido() {
         return sobregiroPermitido;
     }
+
     public double getSaldoDisponible() {
         return this.saldo + this.sobregiroPermitido;
     }
@@ -64,5 +65,13 @@ public class CuentaCorriente extends ProductoFinanciero {
         } else {
             System.out.println("Tipo de transacción no válida para la cuenta corriente.");
         }
+    }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Número de cuenta: ").append(getNumeroCuenta()).append("\n");
+        sb.append("Saldo: ").append(getSaldo()).append("\n");
+        sb.append("Sobregiro permitido: ").append(sobregiroPermitido);
+        return sb.toString();
     }
 }
