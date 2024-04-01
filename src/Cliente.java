@@ -10,7 +10,7 @@ public class Cliente {
     private String telefono;
     private List<ProductoFinanciero> productos;
     private List<Transaccion> transacciones;
-    private static int contadorNumerosCuenta = 1000; // Comenzar desde 1000
+    private int numeroCuenta; // Número de cuenta asociado al cliente
 
     public Cliente(String nombre, String apellido, String id, String telefono, long numeroIdentificacion) throws BancoException {
         this.nombre = nombre;
@@ -28,16 +28,11 @@ public class Cliente {
     }
 
     public void agregarProducto(ProductoFinanciero producto) {
-        producto.setNumeroCuenta(getNextNumeroCuenta());
         productos.add(producto);
     }
 
     public void registrarTransaccion(Transaccion transaccion) {
         transacciones.add(transaccion);
-    }
-
-    public int getNextNumeroCuenta() {
-        return contadorNumerosCuenta++;
     }
 
     public String getNombre() {
@@ -70,6 +65,14 @@ public class Cliente {
 
     public List<Transaccion> getTransacciones() {
         return transacciones;
+    }
+
+    public int getNumeroCuenta() {
+        return numeroCuenta;
+    }
+
+    public void setNumeroCuenta(int numeroCuenta) {
+        this.numeroCuenta = numeroCuenta;
     }
 
     public ProductoFinanciero buscarProducto(int numeroCuentaProducto) {
@@ -108,28 +111,8 @@ public class Cliente {
         sb.append("Teléfono: ").append(telefono).append("\n");
         sb.append("Productos Financieros: \n");
         for (ProductoFinanciero producto : productos) {
-            sb.append("\t- ").append(producto).append(" - Número de cuenta: ").append(producto.getNumeroCuenta()).append("\n");
+            sb.append("\t- ").append(producto).append(" - Número de cuenta: ").append(numeroCuenta).append("\n");
         }
         return sb.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Cliente other = (Cliente) obj;
-        return id.equals(other.id);
     }
 }
