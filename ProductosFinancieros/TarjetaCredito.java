@@ -76,4 +76,15 @@ public class TarjetaCredito extends ProductoFinanciero {
             System.out.println("Tipo de transacción no válida para la tarjeta de crédito.");
         }
     }
+
+    @Override
+    public String toString() {
+        return "Tarjeta de Crédito\n" +
+               "Saldo: " + getSaldo() + "\n" +
+               "Límite de crédito: " + limiteCredito + "\n" +
+               "Tasa de interés: " + tasaInteres + "\n" +
+               "Monto retirado: " + montoRetirado + "\n" +
+               "Cuotas totales: " + cuotasTotales + "\n" +
+               "Cuotas pagadas: " + cuotasPagadas;
+    }
 }

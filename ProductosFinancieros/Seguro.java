@@ -20,4 +20,11 @@ public class Seguro extends ProductoFinanciero {
     public void procesarTransaccion(Transaccion transaccion) {
         // Implementar lógica específica para transacciones de seguro
     }
+
+    @Override
+    public String toString() {
+        return "Seguro: " + tipoSeguro + "\n" +
+               "Prima del seguro: " + primaSeguro + "\n" +
+               "Saldo: " + getSaldo();
+    }
 }

@@ -1,6 +1,9 @@
 public class TarjetaDebito extends ProductoFinanciero {
-    public TarjetaDebito(int numeroCuenta, double saldoInicial) {
+    private double tasaInteres; // Agregar el atributo tasaInteres
+
+    public TarjetaDebito(int numeroCuenta, double saldoInicial, double tasaInteres) {
         super(numeroCuenta, saldoInicial);
+        this.tasaInteres = tasaInteres; // Inicializar la tasa de interés
     }
 
     @Override
@@ -42,5 +45,14 @@ public class TarjetaDebito extends ProductoFinanciero {
         } else {
             System.out.println("Tipo de transacción no válida para la tarjeta de débito.");
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Tarjeta de Débito").append("\n");
+        sb.append("Saldo: $").append(String.format("%.2f", this.saldo)).append("\n");
+        sb.append("Tasa de Interés: ").append(this.tasaInteres).append("%").append("\n"); // Agregar la tasa de interés
+        return sb.toString();
     }
 }
