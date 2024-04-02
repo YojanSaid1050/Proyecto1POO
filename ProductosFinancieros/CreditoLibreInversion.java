@@ -59,7 +59,7 @@ public class CreditoLibreInversion extends ProductoFinanciero {
         return "Crédito de Libre Inversión:\n" +
                "Saldo: $" + getSaldo() + "\n" +
                "Monto del préstamo: $" + montoPrestamo + "\n" +
-               "Tasa de interés: " + tasaInteres + "%\n" +
+               "Tasa de interés: " + tasaInteres * 100 + "%\n" +
                "Deuda restante: $" + deuda + "\n" +
                "Retirado: " + (retirado ? "Sí" : "No");
     }
