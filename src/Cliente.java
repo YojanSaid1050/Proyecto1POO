@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Cliente {
@@ -83,6 +84,31 @@ public class Cliente {
         }
         return null;
     }
+    
+    public ProductoFinanciero obtenerProductoPorTipo(Class<?> tipo) {
+        for (ProductoFinanciero producto : productos) {
+            if (tipo.isInstance(producto)) {
+                return producto;
+            }
+        }
+        return null; // O lanzar una excepción si se desea un manejo más estricto
+    }
+    public void eliminarProducto(CreditoHipotecario credito) {
+        // Verificar si la lista de productos está inicializada
+        if (productos == null) {
+            return; // O lanzar una excepción si es necesario
+        }
+
+        // Utilizar un iterador para recorrer la lista y eliminar el producto
+        Iterator<ProductoFinanciero> iter = productos.iterator();
+        while (iter.hasNext()) {
+            ProductoFinanciero producto = iter.next();
+            if (producto instanceof CreditoHipotecario && producto.equals(credito)) {
+                iter.remove(); // Eliminar el producto de la lista
+                return; // Terminar el método una vez que se ha eliminado el producto
+            }
+        }
+    }
 
     public boolean tieneTipoProducto(Class<?> tipoProducto) {
         for (ProductoFinanciero producto : productos) {
@@ -99,6 +125,16 @@ public class Cliente {
             sb.append(producto.toString()).append("\n");
         }
         return sb.toString();
+    }
+    public CuentaAhorros obtenerCuentaAhorros() {
+        // Iterar sobre los productos financieros del cliente para encontrar la cuenta de ahorros
+        for (ProductoFinanciero producto : productos) {
+            if (producto instanceof CuentaAhorros) {
+                return (CuentaAhorros) producto;
+            }
+        }
+        // Si no se encuentra ninguna cuenta de ahorros, devolver null
+        return null;
     }
 
     @Override
