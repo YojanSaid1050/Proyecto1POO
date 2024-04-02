@@ -31,4 +31,8 @@ public class Transaccion {
     public String getNumeroReferencia() {
         return numeroReferencia;
     }
+    
+    public void ejecutar(ProductoFinanciero producto) throws BancoException {
+    }
+
 }

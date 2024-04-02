@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -17,7 +20,8 @@ public class Menu {
             System.out.println("1. Agregar cliente");
             System.out.println("2. Mostrar información de clientes");
             System.out.println("3. Agregar producto financiero a cliente");
-            System.out.println("4. Salir");
+            System.out.println("4. Realizar transacción");
+            System.out.println("5. Salir");
             System.out.print("Ingrese su opción: ");
             opcion = scanner.nextInt();
 
@@ -32,13 +36,17 @@ public class Menu {
                     agregarProductoFinancieroACliente();
                     break;
                 case 4:
+                    realizarTransaccion(); // Llamada al método realizarTransaccion()
+                    break;
+                case 5:
                     System.out.println("Saliendo del programa...");
                     break;
                 default:
                     System.out.println("Opción inválida. Por favor, ingrese un número válido.");
             }
-        } while (opcion != 4);
+        } while (opcion != 5);
     }
+
 
     private void agregarCliente() {
         try {
@@ -170,9 +178,36 @@ public class Menu {
                     System.out.println("Crédito de libre inversión agregado correctamente al cliente con ID " + idCliente);
                     break;
                 case 3:
-                    // Crear una cuenta de ahorros
-                    agregarCuentaAhorrosACliente(cliente);
+                    try {
+                        // Obtener el ID del cliente
+                        System.out.print("Ingrese el ID del cliente: ");
+                        String idClienteCA = scanner.next();
+
+                        // Verificar si el cliente existe
+                        Cliente clienteCA = banco.buscarCliente(idClienteCA);
+                        if (clienteCA == null) {
+                            throw new BancoException("Cliente no encontrado.");
+                        }
+
+                        // Agregar la cuenta de ahorros al cliente
+                        int numeroCuentaCA = clienteCA.getNumeroCuenta(); // Obtener el número de cuenta del cliente
+                        System.out.print("Ingrese el saldo inicial de la cuenta de ahorros: ");
+                        double saldoInicialCA = scanner.nextDouble();
+                        System.out.print("Ingrese la tasa de interés de la cuenta de ahorros: ");
+                        double tasaInteresCA = scanner.nextDouble();
+
+                        // Crear la cuenta de ahorros y asociarla al cliente
+                        CuentaAhorros cuentaAhorros = new CuentaAhorros(numeroCuentaCA, saldoInicialCA, tasaInteresCA);
+                        clienteCA.agregarProducto(cuentaAhorros);
+                        System.out.println("Cuenta de ahorros agregada correctamente al cliente.");
+                    } catch (InputMismatchException e) {
+                        System.out.println("Error: Ingrese un valor válido.");
+                        scanner.next(); // Limpiar el buffer del scanner
+                    } catch (BancoException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
                     break;
+
                 case 4:
                     // Agregar una cuenta corriente
                     try {
@@ -243,46 +278,36 @@ public class Menu {
                     break;
                 case 7:
                     try {
+                        // Obtener el ID del cliente
+                        System.out.print("Ingrese el ID del cliente: ");
+                        String idClienteTD = scanner.next();
+
+                        // Verificar si el cliente existe
+                        Cliente clienteTD = banco.buscarCliente(idClienteTD);
+                        if (clienteTD == null) {
+                            throw new BancoException("Cliente no encontrado.");
+                        }
+
                         // Verificar si el cliente ya tiene una tarjeta de débito
-                        if (cliente.tieneTipoProducto(TarjetaDebito.class)) {
+                        if (clienteTD.tieneTipoProducto(TarjetaDebito.class)) {
                             throw new BancoException("El cliente ya tiene una tarjeta de débito.");
                         }
 
-                        // Obtener la cuenta de ahorros del cliente si existe
-                        CuentaAhorros cuentaAhorrosExistente = null;
-                        for (ProductoFinanciero producto : cliente.getProductos()) {
-                            if (producto instanceof CuentaAhorros) {
-                                cuentaAhorrosExistente = (CuentaAhorros) producto;
-                                break;
-                            }
-                        }
+                        // Obtener el saldo inicial para la tarjeta de débito
+                        System.out.print("Ingrese el saldo inicial para la tarjeta de débito: ");
+                        double saldoInicialTD = scanner.nextDouble();
 
-                        // Si no tiene cuenta de ahorros, lanzar una excepción o crear una cuenta de ahorros
-                        if (cuentaAhorrosExistente == null) {
-                            System.out.println("Creando una nueva cuenta de ahorros...");
-                            agregarCuentaAhorrosACliente(cliente);
-                            cuentaAhorrosExistente = (CuentaAhorros) cliente.getProductos().get(cliente.getProductos().size() - 1);
-                        }
-
-                        // Obtener el saldo de la cuenta de ahorros
-                        double saldoInicialTD = cuentaAhorrosExistente.getSaldo();
-
-                        // Obtener el número de cuenta de la cuenta de ahorros
-                        int numeroCuentaTD = cuentaAhorrosExistente.getNumeroCuenta();
-
-                        // Obtener la tasa de interés de la cuenta de ahorros
-                        double tasaInteresTD = cuentaAhorrosExistente.getTasaInteres();
-
-                        // Crear la tarjeta de débito con el saldo de la cuenta de ahorros como saldo inicial
-                        TarjetaDebito tarjetaDebito = new TarjetaDebito(numeroCuentaTD, saldoInicialTD, tasaInteresTD);
-                        cliente.agregarProducto(tarjetaDebito);
-                        System.out.println("Tarjeta de débito agregada correctamente al cliente con ID " + idCliente);
+                        // Crear la tarjeta de débito con los datos proporcionados
+                        TarjetaDebito tarjetaDebito = new TarjetaDebito(clienteTD.getNumeroCuenta(), saldoInicialTD);
+                        clienteTD.agregarProducto(tarjetaDebito);
+                        System.out.println("Tarjeta de débito agregada correctamente al cliente con ID " + idClienteTD);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Error: Ingrese un valor válido.");
+                        scanner.next(); // Limpiar el buffer del scanner
                     } catch (BancoException e) {
                         System.out.println("Error: " + e.getMessage());
                     }
                     break;
-
-
 
                 default:
                     System.out.println("Opción no válida.");
@@ -292,21 +317,255 @@ public class Menu {
         }
     }
 
-    private void agregarCuentaAhorrosACliente(Cliente cliente) {
-        int numeroCuenta = cliente.getNumeroCuenta(); // Obtener el número de cuenta del cliente
-        System.out.print("Ingrese el saldo inicial de la cuenta de ahorros: ");
-        double saldoInicial = scanner.nextDouble();
-        System.out.print("Ingrese la tasa de interés de la cuenta de ahorros: ");
-        double tasaInteres = scanner.nextDouble();
-
-        // Crear la cuenta de ahorros y asociarla al cliente
-        CuentaAhorros cuentaAhorros = new CuentaAhorros(numeroCuenta, saldoInicial, false, tasaInteres);
-        cliente.agregarProducto(cuentaAhorros);
-        System.out.println("Cuenta de ahorros agregada correctamente al cliente.");
-    }
 
     public static void main(String[] args) {
         Menu menu = new Menu();
         menu.mostrarMenu();
+    }
+    private void realizarTransaccion() {
+        try {
+            System.out.println("Seleccione el tipo de transacción:");
+            System.out.println("1. Consignar");
+            System.out.println("2. Pagar Crédito");
+
+            int tipoTransaccion = scanner.nextInt();
+            switch (tipoTransaccion) {
+                case 1:
+                    System.out.println("Seleccione el tipo de consignación:");
+                    System.out.println("1. Consignar a cuenta de ahorros");
+                    System.out.println("2. Consignar a cuenta corriente");
+                    System.out.println("3. Consignar a tarjeta de débito");
+
+                    int tipoConsignacion = scanner.nextInt();
+                    switch (tipoConsignacion) {
+                    case 1:
+                        try {
+                            System.out.println("Ingrese el ID del cliente al que desea consignar a la cuenta de ahorros:");
+                            String idCliente = scanner.next();
+
+                            Cliente cliente = banco.buscarCliente(idCliente);
+                            if (cliente == null) {
+                                throw new BancoException("Cliente no encontrado.");
+                            }
+
+                            // Verificar si el cliente tiene una cuenta de ahorros
+                            CuentaAhorros cuentaAhorros = (CuentaAhorros) cliente.obtenerProductoPorTipo(CuentaAhorros.class);
+                            if (cuentaAhorros == null) {
+                                throw new BancoException("El cliente no tiene una cuenta de ahorros.");
+                            }
+
+                            System.out.println("Ingrese el monto a consignar:");
+                            double montoConsignacion = scanner.nextDouble();
+                            Consignacion consignacion = new Consignacion(montoConsignacion);
+                            cuentaAhorros.procesarTransaccion(consignacion);
+                            System.out.println("Consignación realizada con éxito en la cuenta de ahorros del cliente.");
+                        } catch (BancoException e) {
+                            System.out.println("Error al realizar la consignación: " + e.getMessage());
+                        }
+                        break;
+                    case 2:
+                        try {
+                            System.out.println("Ingrese el ID del cliente al que desea consignar a la cuenta corriente:");
+                            String idClienteCC = scanner.next();
+
+                            Cliente clienteCC = banco.buscarCliente(idClienteCC);
+                            if (clienteCC == null) {
+                                throw new BancoException("El cliente con ID " + idClienteCC + " no existe en el banco.");
+                            }
+
+                            // Verificar si el cliente tiene una cuenta corriente
+                            CuentaCorriente cuentaCorriente = (CuentaCorriente) clienteCC.obtenerProductoPorTipo(CuentaCorriente.class);
+                            if (cuentaCorriente == null) {
+                                throw new BancoException("El cliente no tiene una cuenta corriente.");
+                            }
+
+                            System.out.println("Ingrese el monto a consignar:");
+                            double montoConsignacionCC = scanner.nextDouble();
+                            Consignacion consignacionCC = new Consignacion(montoConsignacionCC);
+                            cuentaCorriente.procesarTransaccion(consignacionCC);
+                            System.out.println("Consignación realizada con éxito en la cuenta corriente del cliente.");
+                        } catch (BancoException e) {
+                            System.out.println("Error al realizar la consignación: " + e.getMessage());
+                        }
+                        break;
+                    case 3:
+                        try {
+                            System.out.println("Ingrese el ID del cliente al que desea consignar a la tarjeta de débito:");
+                            String idClienteTD = scanner.next();
+
+                            Cliente clienteTD = banco.buscarCliente(idClienteTD);
+                            if (clienteTD == null) {
+                                throw new BancoException("El cliente con ID " + idClienteTD + " no existe en el banco.");
+                            }
+
+                            // Verificar si el cliente tiene una tarjeta de débito
+                            TarjetaDebito tarjetaDebito = (TarjetaDebito) clienteTD.obtenerProductoPorTipo(TarjetaDebito.class);
+                            if (tarjetaDebito == null) {
+                                throw new BancoException("El cliente no tiene una tarjeta de débito.");
+                            }
+
+                            System.out.println("Ingrese el monto a consignar:");
+                            double montoConsignacionTD = scanner.nextDouble();
+                            Consignacion consignacionTD = new Consignacion(montoConsignacionTD);
+                            tarjetaDebito.procesarTransaccion(consignacionTD);
+                            System.out.println("Consignación realizada con éxito en la tarjeta de débito del cliente.");
+                        } catch (BancoException e) {
+                            System.out.println("Error al realizar la consignación: " + e.getMessage());
+                        }
+                        break;
+                    default:
+                        System.out.println("Tipo de consignación no válido.");
+                        break;
+                    }
+                    break;
+                case 2:
+                    System.out.println("Seleccione el tipo de crédito a pagar:");
+                    System.out.println("1. Crédito Hipotecario");
+                    System.out.println("2. Crédito de Libre Inversión");
+
+                    int tipoCreditoPago = scanner.nextInt();
+                    switch (tipoCreditoPago) {
+                    case 1:
+                        try {
+                            System.out.println("Ingrese el ID del cliente que desea pagar el crédito hipotecario:");
+                            String idClienteHipotecario = scanner.next();
+                            Cliente clienteHipotecario = banco.buscarCliente(idClienteHipotecario);
+                            if (clienteHipotecario == null) {
+                                throw new BancoException("Cliente no encontrado.");
+                            }
+
+                            // Verificar si el cliente tiene un crédito hipotecario
+                            if (!clienteHipotecario.tieneTipoProducto(CreditoHipotecario.class)) {
+                                throw new BancoException("El cliente no tiene un crédito hipotecario.");
+                            }
+
+                            // Obtener el crédito hipotecario del cliente
+                            CreditoHipotecario creditoHipotecario = null;
+                            for (ProductoFinanciero producto : clienteHipotecario.getProductos()) {
+                                if (producto instanceof CreditoHipotecario) {
+                                    creditoHipotecario = (CreditoHipotecario) producto;
+                                    break;
+                                }
+                            }
+                            if (creditoHipotecario == null) {
+                                throw new BancoException("Error al encontrar el crédito hipotecario del cliente.");
+                            }
+
+                            // Solicitar el número de cuenta del cliente
+                            System.out.println("Ingrese el número de cuenta del cliente:");
+                            int numeroCuentaCliente = scanner.nextInt();
+
+                            // Verificar si el número de cuenta concuerda con el ID del cliente
+                            if (numeroCuentaCliente != clienteHipotecario.getNumeroCuenta()) {
+                                throw new BancoException("El número de cuenta no coincide con el cliente.");
+                            }
+
+                            // Verificar si el cliente tiene cuentas de ahorros, cuenta corriente o tarjeta de débito
+                            List<Class<? extends ProductoFinanciero>> tiposCuentas = Arrays.asList(CuentaAhorros.class, CuentaCorriente.class, TarjetaDebito.class);
+                            boolean tieneCuentas = false;
+                            for (Class<? extends ProductoFinanciero> tipo : tiposCuentas) {
+                                if (clienteHipotecario.tieneTipoProducto(tipo)) {
+                                    tieneCuentas = true;
+                                    break;
+                                }
+                            }
+                            if (!tieneCuentas) {
+                                throw new BancoException("El cliente no tiene cuenta de ahorros, cuenta corriente o tarjeta de débito para realizar el pago.");
+                            }
+
+                            // Solicitar el tipo de cuenta para pagar la deuda
+                            System.out.println("Seleccione el tipo de cuenta para pagar la deuda:");
+                            System.out.println("1. Cuenta de ahorros");
+                            System.out.println("2. Cuenta corriente");
+                            System.out.println("3. Tarjeta de débito");
+                            int tipoCuentaPago = scanner.nextInt();
+
+                            // Obtener el producto financiero correspondiente para realizar el pago
+                            ProductoFinanciero cuentaPago = null;
+                            switch (tipoCuentaPago) {
+                                case 1:
+                                    if (clienteHipotecario.tieneTipoProducto(CuentaAhorros.class)) {
+                                        cuentaPago = clienteHipotecario.obtenerProductoPorTipo(CuentaAhorros.class);
+                                    } else {
+                                        throw new BancoException("El cliente no tiene una cuenta de ahorros para realizar el pago.");
+                                    }
+                                    break;
+                                case 2:
+                                    if (clienteHipotecario.tieneTipoProducto(CuentaCorriente.class)) {
+                                        cuentaPago = clienteHipotecario.obtenerProductoPorTipo(CuentaCorriente.class);
+                                    } else {
+                                        throw new BancoException("El cliente no tiene una cuenta corriente para realizar el pago.");
+                                    }
+                                    break;
+                                case 3:
+                                    if (clienteHipotecario.tieneTipoProducto(TarjetaDebito.class)) {
+                                        cuentaPago = clienteHipotecario.obtenerProductoPorTipo(TarjetaDebito.class);
+                                    } else {
+                                        throw new BancoException("El cliente no tiene una tarjeta de débito para realizar el pago.");
+                                    }
+                                    break;
+                                default:
+                                    throw new BancoException("Tipo de cuenta no válido.");
+                            }
+
+                            // Solicitar información adicional para confirmar el pago
+                            System.out.println("Ingrese el número de cuenta asociado a la cuenta seleccionada:");
+                            int numeroCuentaConfirmacion = scanner.nextInt();
+                            System.out.println("Ingrese el ID asociado a la cuenta seleccionada:");
+                            String idConfirmacion = scanner.next();
+                            System.out.println("Ingrese el número de identificación asociado a la cuenta seleccionada:");
+                            int numeroIdentificacionConfirmacion = scanner.nextInt();
+
+                            // Verificar si la información ingresada coincide con los datos del cliente y la cuenta seleccionada
+                            if (numeroCuentaConfirmacion != cuentaPago.getNumeroCuenta() || !idConfirmacion.equals(clienteHipotecario.getId()) || numeroIdentificacionConfirmacion != clienteHipotecario.getNumeroIdentificacion()) {
+                                throw new BancoException("La información ingresada no coincide con los datos del cliente y la cuenta seleccionada.");
+                            }
+
+                            // Mostrar la deuda actual
+                            System.out.println("Deuda actual del crédito hipotecario: $" + creditoHipotecario.getDeuda());
+
+                            // Solicitar el monto a pagar
+                            System.out.println("Ingrese el monto a pagar:");
+                            double montoPago = scanner.nextDouble();
+
+                            // Verificar si el saldo de la cuenta es suficiente para realizar el pago
+                            if (cuentaPago.getSaldo() < montoPago) {
+                                throw new BancoException("La cuenta seleccionada no tiene saldo suficiente para realizar el pago.");
+                            }
+
+                            // Procesar la transacción de pago del crédito hipotecario
+                            Transaccion pagoCreditoHipotecario = new PagoCreditoHipotecario(montoPago);
+                            cuentaPago.procesarTransaccion(pagoCreditoHipotecario);
+
+                            // Actualizar la deuda restante del crédito hipotecario
+                            System.out.println("Deuda restante del crédito hipotecario: $" + creditoHipotecario.getDeuda());
+
+                            // Eliminar el producto financiero si la deuda se ha pagado completamente
+                            if (creditoHipotecario.getDeuda() == 0) {
+                                clienteHipotecario.eliminarProducto(creditoHipotecario);
+                                System.out.println("¡La deuda del crédito hipotecario ha sido pagada completamente!");
+                            }
+                        } catch (BancoException e) {
+                            System.out.println("Error al realizar el pago del crédito hipotecario: " + e.getMessage());
+                        }
+                        break;
+
+                        case 2:
+                            // Lógica para pagar crédito de libre inversión
+                            break;
+                        default:
+                            System.out.println("Tipo de crédito no válido.");
+                            break;
+                    }
+                    break;
+
+                default:
+                    System.out.println("Tipo de transacción no válida.");
+                    break;
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Ingrese un número válido para el tipo de transacción.");
+            scanner.next(); // Limpiar el buffer del scanner
+        }
     }
 }
