@@ -1,5 +1,5 @@
-class PagoCreditoLibreInversion extends Transaccion {
+public class PagoCreditoLibreInversion extends Transaccion {
     public PagoCreditoLibreInversion(double monto) {
-        super("Pago Credito Libre Inversion", monto);
+        super("Pago de Crédito de Libre Inversión", monto);
     }
 }
