@@ -2,14 +2,12 @@ public class CreditoLibreInversion extends ProductoFinanciero {
     private double montoPrestamo;
     private double tasaInteres;
     private double deuda;
-    private boolean retirado;
 
     public CreditoLibreInversion(int numeroCuenta, double saldoInicial, double montoPrestamo, double tasaInteres) {
         super(numeroCuenta, saldoInicial);
         this.montoPrestamo = montoPrestamo;
         this.tasaInteres = tasaInteres;
         this.deuda = montoPrestamo;
-        this.retirado = false;
     }
 
     public double getMontoPrestamo() {
@@ -20,47 +18,43 @@ public class CreditoLibreInversion extends ProductoFinanciero {
         return tasaInteres;
     }
 
-    public double getDeudaRestante() {
+    public double getDeuda() {
         return deuda;
     }
 
-    public boolean isRetirado() {
-        return retirado;
-    }
-
-    @Override
-    public void procesarTransaccion(Transaccion transaccion) {
-        if (transaccion.getTipo().equals("Retiro")) {
-            if (retirado) {
-                throw new IllegalStateException("Ya se ha realizado un retiro previamente. Pague el crédito antes de retirar nuevamente.");
-            }
-            double montoRetiro = transaccion.getMonto();
-            this.saldo += montoRetiro;
-            retirado = true;
-            System.out.println("Retiro de $" + montoRetiro + " realizado con éxito desde el crédito de libre inversión.");
-        } else if (transaccion.getTipo().equals("Pago de Crédito de Libre Inversión")) {
-            if (!retirado) {
-                throw new IllegalStateException("No se puede pagar el crédito antes de realizar un retiro.");
-            }
-            double montoPago = (montoPrestamo * (1 + tasaInteres));
-            if (montoPago > deuda) {
-                montoPago = deuda;
-            }
-            this.saldo -= montoPago;
+    public void realizarPagoCredito(double montoPago) throws BancoException {
+        if (montoPago <= 0) {
+            throw new BancoException("El monto del pago debe ser mayor que cero.");
+        }
+        if (montoPago <= deuda) {
             deuda -= montoPago;
-            System.out.println("Pago de $" + montoPago + " realizado con éxito para el crédito de libre inversión. Deuda restante: $" + deuda);
+            System.out.println("Pago de $" + montoPago + " realizado. Deuda restante: $" + deuda);
         } else {
-            System.out.println("Tipo de transacción no válida para el crédito de libre inversión.");
+            throw new BancoException("El monto del pago excede la deuda actual.");
         }
     }
 
     @Override
     public String toString() {
-        return "Crédito de Libre Inversión:\n" +
-               "Saldo: $" + getSaldo() + "\n" +
+        return "\n" +
+               "Crédito de Libre Inversión:\n" +
                "Monto del préstamo: $" + montoPrestamo + "\n" +
                "Tasa de interés: " + tasaInteres * 100 + "%\n" +
-               "Deuda restante: $" + deuda + "\n" +
-               "Retirado: " + (retirado ? "Sí" : "No");
+               "Deuda restante: $" + deuda;
+    }
+
+    @Override
+    public void procesarTransaccion(Transaccion transaccion) {
+        if (transaccion instanceof PagoCreditoLibreInversion) {
+            PagoCreditoLibreInversion pago = (PagoCreditoLibreInversion) transaccion;
+            double montoPago = pago.getMonto();
+            try {
+                realizarPagoCredito(montoPago);
+            } catch (BancoException e) {
+                System.out.println("Error al procesar el pago del crédito de libre inversión: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Tipo de transacción no válida para el crédito de libre inversión.");
+        }
     }
 }
