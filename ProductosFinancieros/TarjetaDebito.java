@@ -1,8 +1,25 @@
 public class TarjetaDebito extends ProductoFinanciero {
+
+    // Constructor
     public TarjetaDebito(int numeroCuenta, double saldoInicial) {
         super(numeroCuenta, saldoInicial);
     }
 
+    // Método para retirar un monto del saldo de la tarjeta de débito
+    public void retirar(double monto) {
+        if (monto <= 0) {
+            System.out.println("El monto a retirar debe ser mayor que cero.");
+            return;
+        }
+        if (monto > getSaldo()) {
+            System.out.println("El monto a retirar excede el saldo disponible en la tarjeta de débito.");
+            return;
+        }
+        setSaldo(getSaldo() - monto);
+        System.out.println("Se ha retirado $" + monto + " de la tarjeta de débito. Nuevo saldo: $" + getSaldo());
+    }
+
+    // Sobrescritura del método procesarTransaccion para manejar transacciones específicas de la tarjeta de débito
     @Override
     public void procesarTransaccion(Transaccion transaccion) {
         if (transaccion instanceof Consignacion) {
@@ -24,10 +41,11 @@ public class TarjetaDebito extends ProductoFinanciero {
         }
     }
 
+    // Sobrescritura del método toString para representar la información de la tarjeta de débito como una cadena de texto
     @Override
     public String toString() {
-        return "Tarjeta de Débito:\n" +
-               "Número de cuenta: " + getNumeroCuenta() + "\n" +
+        return "\n" +
+               "Tarjeta de Débito:\n" +
                "Saldo: $" + getSaldo();
     }
 }

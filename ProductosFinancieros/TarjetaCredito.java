@@ -1,3 +1,4 @@
+
 public class TarjetaCredito extends ProductoFinanciero {
     private double limiteCredito;
     private double tasaInteres;
@@ -17,15 +18,16 @@ public class TarjetaCredito extends ProductoFinanciero {
     }
 
     @Override
-    public String toString() {
-        return "Tarjeta de Crédito\n" +
-               "Límite de crédito: $" + limiteCredito + "\n" +
-               "Tasa de interés: " + tasaInteres * 100 + "%";
+    public void procesarTransaccion(Transaccion transaccion) {
+        // Método vacío, ya que no se están procesando transacciones en esta versión
     }
 
-	@Override
-	public void procesarTransaccion(Transaccion transaccion) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public String toString() {
+        return "\n" +
+               "Tarjeta de Crédito\n" +
+               "Límite de crédito: $" + limiteCredito + "\n" +
+               "Tasa de interés: " + tasaInteres * 100 + "%\n" +
+               "Saldo: $" + getSaldo();
+    }
 }
