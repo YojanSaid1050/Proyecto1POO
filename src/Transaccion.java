@@ -31,8 +31,10 @@ public class Transaccion {
     public String getNumeroReferencia() {
         return numeroReferencia;
     }
-    
+
+    // Método para ejecutar la transacción en un producto financiero específico
     public void ejecutar(ProductoFinanciero producto) throws BancoException {
+        // Este método será implementado en las clases derivadas para ejecutar la transacción específica
     }
 
 }
