@@ -1,16 +1,24 @@
-class Transferencia extends Transaccion {
-    private int cuentaDestino;
+public class Transferencia extends Transaccion {
+    private int numeroCuentaDestino;
+    private String idClienteDestino;
+    private String nombreClienteDestino;
 
-    public Transferencia(int cuentaDestino, double monto) {
+    public Transferencia(double monto, int numeroCuentaDestino, String idClienteDestino, String nombreClienteDestino) {
         super("Transferencia", monto);
-        this.cuentaDestino = cuentaDestino;
+        this.numeroCuentaDestino = numeroCuentaDestino;
+        this.idClienteDestino = idClienteDestino;
+        this.nombreClienteDestino = nombreClienteDestino;
     }
 
-    public int getCuentaDestino() {
-        return cuentaDestino;
+    public int getNumeroCuentaDestino() {
+        return numeroCuentaDestino;
     }
 
-    public void setCuentaDestino(int cuentaDestino) {
-        this.cuentaDestino = cuentaDestino;
+    public String getIdClienteDestino() {
+        return idClienteDestino;
+    }
+
+    public String getNombreClienteDestino() {
+        return nombreClienteDestino;
     }
 }
