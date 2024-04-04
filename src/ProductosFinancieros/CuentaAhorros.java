@@ -1,7 +1,13 @@
+package ProductosFinancieros;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import LogicaBanco.ProductoFinanciero;
+import LogicaBanco.Transaccion;
+import TiposTransaccion.Consignacion;
+import TiposTransaccion.Retiro;
 
 public class CuentaAhorros extends ProductoFinanciero {
     private double tasaInteres;
@@ -37,7 +43,6 @@ public class CuentaAhorros extends ProductoFinanciero {
         setSaldo(getSaldo() - monto);
         System.out.println("Se ha retirado $" + monto + " de la cuenta de ahorros.");
     }
-
 
     @Override
     public void procesarTransaccion(Transaccion transaccion) {

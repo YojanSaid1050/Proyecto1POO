@@ -1,3 +1,9 @@
+package TiposTransaccion;
+import Excepciones.BancoException;
+import LogicaBanco.ProductoFinanciero;
+import LogicaBanco.Transaccion;
+import ProductosFinancieros.CreditoLibreInversion;
+
 public class PagoCreditoLibreInversion extends Transaccion {
     public PagoCreditoLibreInversion(double monto) {
         super("Pago de Crédito de Libre Inversión", monto);

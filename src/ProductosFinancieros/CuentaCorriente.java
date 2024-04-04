@@ -1,3 +1,7 @@
+package ProductosFinancieros;
+import LogicaBanco.ProductoFinanciero;
+import LogicaBanco.Transaccion;
+import TiposTransaccion.Consignacion;
 
 public class CuentaCorriente extends ProductoFinanciero {
     private double sobregiroPermitido;

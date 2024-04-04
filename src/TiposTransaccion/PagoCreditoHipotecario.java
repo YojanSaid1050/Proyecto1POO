@@ -1,3 +1,9 @@
+package TiposTransaccion;
+import Excepciones.BancoException;
+import LogicaBanco.ProductoFinanciero;
+import LogicaBanco.Transaccion;
+import ProductosFinancieros.CreditoHipotecario;
+
 public class PagoCreditoHipotecario extends Transaccion {
     public PagoCreditoHipotecario(double monto) {
         super("Pago de Crédito Hipotecario", monto);

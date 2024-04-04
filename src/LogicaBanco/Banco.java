@@ -1,5 +1,11 @@
+package LogicaBanco;
+
+
 import java.util.HashMap;
 import java.util.Map;
+
+import Excepciones.BancoException;
+
 import java.util.Collection;
 
 public class Banco {
@@ -59,10 +65,7 @@ public class Banco {
         return clientes.values();
     }
 
-    private int getNextNumeroCuenta() {
-        // Implementación para generar el siguiente número de cuenta
-        // Puedes modificar esta lógica según tus requisitos
-        // Por ejemplo, puedes usar una base inicial y luego incrementarla para cada nuevo cliente
+    public int getNextNumeroCuenta() {
         return clientes.size() + 1000;
     }
 }

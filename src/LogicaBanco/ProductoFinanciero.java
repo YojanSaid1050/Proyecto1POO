@@ -1,3 +1,7 @@
+package LogicaBanco;
+
+
+
 public abstract class ProductoFinanciero {
     protected int numeroCuenta;
     protected double saldo;
@@ -30,7 +34,6 @@ public abstract class ProductoFinanciero {
 
     // Método abstracto para procesar transacciones específicas de cada tipo de producto financiero
     public abstract void procesarTransaccion(Transaccion transaccion);
-
     @Override
     public abstract String toString();
 }

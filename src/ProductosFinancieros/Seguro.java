@@ -1,5 +1,10 @@
+package ProductosFinancieros;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import LogicaBanco.ProductoFinanciero;
+import LogicaBanco.Transaccion;
 
 public class Seguro extends ProductoFinanciero {
     private String tipoSeguro;
@@ -52,5 +57,4 @@ public class Seguro extends ProductoFinanciero {
         sb.append("Saldo: ").append(getSaldo());
         return sb.toString();
     }
-
 }

@@ -1,3 +1,8 @@
+package LogicaBanco;
+
+
+import Excepciones.BancoException;
+
 public class Transaccion {
     private String tipo;
     private double monto;

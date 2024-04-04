@@ -1,3 +1,9 @@
+package ProductosFinancieros;
+import LogicaBanco.ProductoFinanciero;
+import LogicaBanco.Transaccion;
+import TiposTransaccion.Consignacion;
+import TiposTransaccion.PagoCreditoHipotecario;
+
 public class TarjetaDebito extends ProductoFinanciero {
 
     // Constructor

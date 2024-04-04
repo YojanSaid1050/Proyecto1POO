@@ -1,6 +1,12 @@
+package logica;
+
 import java.util.Collection;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import Excepciones.*; 
+import LogicaBanco.*; 
+import TiposTransaccion.*; 
+import ProductosFinancieros.*;
 
 public class LogicaInterfaz {
     private Banco banco;

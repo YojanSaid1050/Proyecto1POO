@@ -1,3 +1,6 @@
+package TiposTransaccion;
+import LogicaBanco.Transaccion;
+
 public class Transferencia extends Transaccion {
     private int numeroCuentaDestino;
     private String idClienteDestino;

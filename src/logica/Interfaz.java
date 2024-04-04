@@ -1,5 +1,7 @@
+package logica;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
 
 public class Interfaz {
     private LogicaInterfaz LogicaInterfaz;

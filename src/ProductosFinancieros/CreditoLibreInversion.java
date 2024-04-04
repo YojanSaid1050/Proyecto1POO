@@ -1,3 +1,9 @@
+package ProductosFinancieros;
+import Excepciones.BancoException;
+import LogicaBanco.ProductoFinanciero;
+import LogicaBanco.Transaccion;
+import TiposTransaccion.PagoCreditoLibreInversion;
+
 public class CreditoLibreInversion extends ProductoFinanciero {
     private double montoPrestamo;
     private double tasaInteres;

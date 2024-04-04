@@ -1,3 +1,8 @@
+package ProductosFinancieros;
+import Excepciones.BancoException;
+import LogicaBanco.ProductoFinanciero;
+import LogicaBanco.Transaccion;
+import TiposTransaccion.PagoCreditoHipotecario;
 
 public class CreditoHipotecario extends ProductoFinanciero {
     private double montoPrestamo;

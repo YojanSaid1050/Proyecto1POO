@@ -1,3 +1,6 @@
+package TiposTransaccion;
+import LogicaBanco.Transaccion;
+
 public class PagoServicioPublico extends Transaccion {
     private String tipoServicioPublico;
     private String numeroReferencia;
