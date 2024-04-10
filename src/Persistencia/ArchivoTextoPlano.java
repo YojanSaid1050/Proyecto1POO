@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import LogicaBanco.Cliente;
+import LogicaBanco.ProductoFinanciero;
 
 public class ArchivoTextoPlano {
 
@@ -47,6 +48,25 @@ public class ArchivoTextoPlano {
             System.out.println("Error al cargar el archivo: " + e.getMessage());
         }
         return clientes;
+    }
+    public static void guardarProductosFinancierosClientesCSV(String nombreArchivo, List<Cliente> clientes) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo))) {
+            for (Cliente cliente : clientes) {
+                if (!cliente.getProductosFinancieros().isEmpty()) {
+                    for (ProductoFinanciero producto : cliente.getProductosFinancieros()) {
+                        String linea = cliente.getId() + ";" + producto.getClass().getSimpleName() + ";" + producto.toString();
+                        writer.write(linea);
+                        writer.newLine();
+                    }
+                } else {
+                    throw new IOException("El cliente " + cliente.getNombre() + " " + cliente.getApellido() + " no tiene productos financieros asociados.");
+                }
+            }
+            System.out.println("Productos financieros de los clientes guardados en el archivo " + nombreArchivo + " exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Error al guardar el archivo de productos financieros de clientes: " + e.getMessage());
+            throw e;
+        }
     }
     
 }

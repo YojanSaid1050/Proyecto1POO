@@ -2,9 +2,11 @@ package Principal;
 
 import LogicaBanco.*;
 import Persistencia.ArchivoTextoPlano;
+
 import java.util.Scanner;
 
 import Excepciones.BancoException;
+import java.io.IOException;
 
 public class Interfaz {
     private Banco banco;
@@ -28,8 +30,9 @@ public class Interfaz {
                 System.out.println("5. Retirar");
                 System.out.println("6. Transferir entre clientes");
                 System.out.println("7. Transferir entre cuentas del mismo cliente");
-                System.out.println("8. Guardar información del banco en archivo");
-                System.out.println("9. Cargar información del banco desde archivo");
+                System.out.println("8. Mostrar Transacciones del cliente");
+                System.out.println("9. Guardar información del clientes en archivo");
+                System.out.println("10. Cargar información del clientes desde archivo");
                 System.out.println("0. Salir");
 
                 int opcion = scanner.nextInt();
@@ -68,6 +71,13 @@ public class Interfaz {
                         banco.getClientes().addAll(ArchivoTextoPlano.cargarClientesCSV(NOMBRE_ARCHIVO));
                         System.out.println("Información del banco cargada exitosamente desde el archivo " + NOMBRE_ARCHIVO);
                         break;
+                    case 11:
+                        try {
+                            ArchivoTextoPlano.guardarProductosFinancierosClientesCSV("productos_financieros_clientes.csv", banco.getClientes());
+                        } catch (IOException e) {
+                        }
+                        break;
+                    
                     case 0:
                         System.out.println("Saliendo del programa...");
                         return;
