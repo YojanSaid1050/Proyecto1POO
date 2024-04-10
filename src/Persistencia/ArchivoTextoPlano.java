@@ -5,10 +5,12 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
 import LogicaBanco.Cliente;
+import LogicaBanco.ProductoFinanciero;
 
 public class ArchivoTextoPlano {
 
