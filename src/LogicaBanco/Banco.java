@@ -1,71 +1,27 @@
 package LogicaBanco;
 
-
-import java.util.HashMap;
-import java.util.Map;
-
-import Excepciones.BancoException;
-
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Banco {
-
-    private Map<Integer, Cliente> clientes; // HashMap con el número de cuenta como clave
+    private List<Cliente> clientes;
 
     public Banco() {
-        clientes = new HashMap<>();
+        this.clientes = new ArrayList<>();
     }
 
-    public void agregarCliente(Cliente cliente) throws BancoException {
-        if (!clientes.containsValue(cliente)) {
-            int numeroCuenta = getNextNumeroCuenta();
-            cliente.setNumeroCuenta(numeroCuenta);
-            clientes.put(numeroCuenta, cliente);
-            System.out.println("Cliente agregado correctamente. Su número de cuenta es: " + numeroCuenta);
-        } else {
-            throw new BancoException("El cliente ya existe en el banco.");
+    public void agregarCliente(Cliente cliente) {
+        clientes.add(cliente);
+    }
+
+    public List<Cliente> getClientes() {
+        return clientes;
+    }
+    public List<ProductoFinanciero> obtenerTodosLosProductosFinancieros() {
+        List<ProductoFinanciero> productos = new ArrayList<>();
+        for (Cliente cliente : clientes) {
+            productos.addAll(cliente.getProductosFinancieros());
         }
-    }
-
-    public Cliente buscarCliente(String idCliente) {
-        for (Cliente cliente : clientes.values()) {
-            if (cliente.getId().equals(idCliente)) {
-                return cliente;
-            }
-        }
-        return null;
-    }
-
-    public void eliminarCliente(int numeroCuenta) throws BancoException {
-        if (clientes.containsKey(numeroCuenta)) {
-            clientes.remove(numeroCuenta);
-            System.out.println("Cliente eliminado correctamente.");
-        } else {
-            throw new BancoException("El cliente no existe en el banco.");
-        }
-    }
-
-    public void actualizarCliente(int numeroCuenta, Cliente cliente) throws BancoException {
-        if (clientes.containsKey(numeroCuenta)) {
-            clientes.put(numeroCuenta, cliente);
-            System.out.println("Cliente actualizado correctamente.");
-        } else {
-            throw new BancoException("El cliente no existe en el banco.");
-        }
-    }
-
-    public void listarClientes() {
-        System.out.println("Clientes del banco:");
-        for (Cliente cliente : clientes.values()) {
-            System.out.println(cliente);
-        }
-    }
-
-    public Collection<Cliente> getClientes() {
-        return clientes.values();
-    }
-
-    public int getNextNumeroCuenta() {
-        return clientes.size() + 1000;
+        return productos;
     }
 }

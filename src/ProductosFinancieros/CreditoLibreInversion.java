@@ -1,66 +1,76 @@
 package ProductosFinancieros;
+
 import Excepciones.BancoException;
+import LogicaBanco.Cliente;
 import LogicaBanco.ProductoFinanciero;
-import LogicaBanco.Transaccion;
-import TiposTransaccion.PagoCreditoLibreInversion;
 
 public class CreditoLibreInversion extends ProductoFinanciero {
-    private double montoPrestamo;
     private double tasaInteres;
     private double deuda;
 
-    public CreditoLibreInversion(int numeroCuenta, double saldoInicial, double montoPrestamo, double tasaInteres) {
-        super(numeroCuenta, saldoInicial);
-        this.montoPrestamo = montoPrestamo;
+    public CreditoLibreInversion(Cliente cliente, double saldo, double tasaInteres) {
+        super(cliente, saldo);
         this.tasaInteres = tasaInteres;
-        this.deuda = montoPrestamo;
-    }
-
-    public double getMontoPrestamo() {
-        return montoPrestamo;
+        this.deuda = saldo + (saldo * tasaInteres);
     }
 
     public double getTasaInteres() {
         return tasaInteres;
     }
 
+    public void setTasaInteres(double tasaInteres) {
+        this.tasaInteres = tasaInteres;
+    }
+
     public double getDeuda() {
         return deuda;
     }
+    
+    public void setDeuda(double deuda) {
+        this.deuda = deuda;
+    }
 
-    public void realizarPagoCredito(double montoPago) throws BancoException {
-        if (montoPago <= 0) {
-            throw new BancoException("El monto del pago debe ser mayor que cero.");
+    @Override
+    public void consignar(double cantidad) throws BancoException {
+        if (cantidad <= 0) {
+            throw new BancoException("La cantidad a consignar debe ser mayor que cero.");
         }
-        if (montoPago <= deuda) {
-            deuda -= montoPago;
-            System.out.println("Pago de $" + montoPago + " realizado. Deuda restante: $" + deuda);
-        } else {
-            throw new BancoException("El monto del pago excede la deuda actual.");
+        if (cantidad > deuda) {
+            throw new BancoException("La cantidad a consignar no puede ser mayor que la deuda.");
+        }
+        deuda -= cantidad;
+        if (deuda <= 0) {
+            cliente.getProductosFinancieros().remove(this);
         }
     }
 
+    @Override
+    public void retirar(double cantidad) throws BancoException {
+        if (cantidad <= 0) {
+            throw new BancoException("La cantidad a retirar debe ser mayor que cero.");
+        }
+        if (cantidad > saldo) {
+            throw new BancoException("No se puede retirar una cantidad mayor que el saldo disponible.");
+        }
+        saldo -= cantidad;
+    }
+    @Override
+    public void transferirACuenta(ProductoFinanciero destino, double cantidad) throws BancoException {
+        if (cantidad <= 0) {
+            throw new BancoException("La cantidad a transferir debe ser mayor que cero.");
+        }
+        if (cantidad > this.saldo) {
+            throw new BancoException("No hay suficiente saldo en el crédito de libre inversión para realizar la transferencia.");
+        }
+
+        destino.consignar(cantidad);
+        this.saldo -= cantidad;
+    }
     @Override
     public String toString() {
-        return "\n" +
-               "Crédito de Libre Inversión:\n" +
-               "Monto del préstamo: $" + montoPrestamo + "\n" +
-               "Tasa de interés: " + tasaInteres * 100 + "%\n" +
-               "Deuda restante: $" + deuda;
-    }
-
-    @Override
-    public void procesarTransaccion(Transaccion transaccion) {
-        if (transaccion instanceof PagoCreditoLibreInversion) {
-            PagoCreditoLibreInversion pago = (PagoCreditoLibreInversion) transaccion;
-            double montoPago = pago.getMonto();
-            try {
-                realizarPagoCredito(montoPago);
-            } catch (BancoException e) {
-                System.out.println("Error al procesar el pago del crédito de libre inversión: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Tipo de transacción no válida para el crédito de libre inversión.");
-        }
+        return "Crédito de Libre Inversión\n" +
+               "Saldo: " + saldo + "\n" +
+               "Tasa de interés: " + tasaInteres + "\n" +
+               "Deuda: " + deuda +"\n";
     }
 }

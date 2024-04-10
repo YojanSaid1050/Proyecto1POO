@@ -1,74 +1,77 @@
 package ProductosFinancieros;
+
 import Excepciones.BancoException;
+import LogicaBanco.Cliente;
 import LogicaBanco.ProductoFinanciero;
-import LogicaBanco.Transaccion;
-import TiposTransaccion.PagoCreditoHipotecario;
 
 public class CreditoHipotecario extends ProductoFinanciero {
-    private double montoPrestamo;
     private double tasaInteres;
     private double deuda;
 
-    public CreditoHipotecario(int numeroCuenta, double saldoInicial, double montoPrestamo, double tasaInteres) {
-        super(numeroCuenta, saldoInicial);
-        this.montoPrestamo = montoPrestamo;
+    public CreditoHipotecario(Cliente cliente, double saldo, double tasaInteres) {
+        super(cliente, saldo);
         this.tasaInteres = tasaInteres;
-        this.deuda = montoPrestamo+(montoPrestamo*tasaInteres);
-    }
-
-    public double getMontoPrestamo() {
-        return montoPrestamo;
+        this.deuda = saldo + (saldo * tasaInteres);
     }
 
     public double getTasaInteres() {
         return tasaInteres;
     }
-    
+
+    public void setTasaInteres(double tasaInteres) {
+        this.tasaInteres = tasaInteres;
+    }
+
     public double getDeuda() {
         return deuda;
     }
-    
-    // Método para realizar el pago de la deuda del crédito hipotecario
-    public void realizarPagoCredito(double monto) throws BancoException {
-        if (monto <= 0) {
-            throw new BancoException("El monto del pago debe ser mayor que cero.");
+  
+    @Override
+    public void consignar(double cantidad) throws BancoException {
+        if (cantidad <= 0) {
+            throw new BancoException("La cantidad a consignar debe ser mayor que cero.");
         }
-        if (monto <= deuda) {
-            deuda -= monto; // Reducir la deuda en función del monto pagado
-            System.out.println("Pago de $" + monto + " realizado. Deuda restante: $" + deuda);
-        } else {
-            throw new BancoException("El monto del pago excede la deuda actual.");
+        deuda -= cantidad;
+        if (deuda <= 0) {
+            cliente.getProductosFinancieros().remove(this);
         }
     }
+    public void setDeuda(double deuda) {
+        this.deuda = deuda;
+    }
     
-    // Método para establecer una nueva deuda
-    public void setDeuda(double nuevaDeuda) {
-        this.deuda = nuevaDeuda;
+    @Override
+    public void retirar(double cantidad) throws BancoException {
+        if (cantidad <= 0) {
+            throw new BancoException("La cantidad a retirar debe ser mayor que cero.");
+        }
+        if (cantidad > saldo) {
+            throw new BancoException("No se puede retirar una cantidad mayor que el saldo disponible.");
+        }
+        saldo -= cantidad;
     }
 
-    // Sobrescritura del método toString para representar la información del crédito hipotecario como una cadena de texto
     @Override
     public String toString() {
-        return "\n" +
-               "Crédito Hipotecario:\n" +
-               "Monto del préstamo: $" + montoPrestamo + "\n" +
-               "Tasa de interés: " + tasaInteres * 100 + "%\n" +
-               "Deuda restante: $" + deuda;
+        return "Crédito Hipotecario\n" +
+               "Saldo: " + saldo + "\n" +
+               "Tasa de interés: " + tasaInteres + "\n"+
+               "Deuda: " + deuda + "\n";
+    }
+    
+    @Override
+    public void transferirACuenta(ProductoFinanciero destino, double cantidad) throws BancoException {
+        if (cantidad <= 0) {
+            throw new BancoException("La cantidad a transferir debe ser mayor que cero.");
+        }
+        if (cantidad > this.saldo) {
+            throw new BancoException("No hay suficiente saldo en el crédito hipotecario para realizar la transferencia.");
+        }
+
+        // Realizar la transferencia al producto financiero destino
+        destino.consignar(cantidad);
+        // Actualizar el saldo del crédito hipotecario
+        this.saldo -= cantidad;
     }
 
-    // Implementación del método abstracto procesarTransaccion de la clase ProductoFinanciero
-    @Override
-    public void procesarTransaccion(Transaccion transaccion) {
-        if (transaccion instanceof PagoCreditoHipotecario) {
-            PagoCreditoHipotecario pago = (PagoCreditoHipotecario) transaccion;
-            double montoPago = pago.getMonto();
-            try {
-                realizarPagoCredito(montoPago);
-            } catch (BancoException e) {
-                System.out.println("Error al procesar el pago del crédito hipotecario: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Tipo de transacción no válida para el crédito hipotecario.");
-        }
-    }
 }

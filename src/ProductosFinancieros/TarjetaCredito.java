@@ -1,63 +1,77 @@
 package ProductosFinancieros;
 
+import Excepciones.BancoException;
+import LogicaBanco.Cliente;
 import LogicaBanco.ProductoFinanciero;
-import LogicaBanco.Transaccion;
 
 public class TarjetaCredito extends ProductoFinanciero {
-    private double limiteCredito;
     private double tasaInteres;
-    private boolean montoRetirado;
+    private double deuda;
 
-    public TarjetaCredito(int numeroCuenta, double saldoInicial, double limiteCredito, double tasaInteres) {
-        super(numeroCuenta, saldoInicial);
-        this.limiteCredito = limiteCredito;
+    public TarjetaCredito(Cliente cliente, double saldo, double tasaInteres) {
+        super(cliente, saldo);
         this.tasaInteres = tasaInteres;
-        this.montoRetirado = false;
-    }
-
-    public double getLimiteCredito() {
-        return limiteCredito;
+        this.deuda = saldo;
     }
 
     public double getTasaInteres() {
         return tasaInteres;
     }
 
-    public boolean getMontoRetirado() {
-        return montoRetirado;
+    public void setTasaInteres(double tasaInteres) {
+        this.tasaInteres = tasaInteres;
+        actualizarDeuda();
     }
 
-    public void setMontoRetirado(boolean montoRetirado) {
-        this.montoRetirado = montoRetirado;
+    public double getDeuda() {
+        return deuda;
     }
 
-    public void realizarPago(double monto) {
-        if (montoRetirado) {
-            double nuevoSaldo = getSaldo() - monto;
-            if (nuevoSaldo >= 0) {
-                setSaldo(nuevoSaldo);
-                montoRetirado = false; // Actualizar el estado del montoRetirado
-                System.out.println("Pago realizado con éxito. Nuevo saldo: $" + getSaldo());
-            } else {
-                System.out.println("No se puede realizar el pago. El monto excede el saldo disponible.");
-            }
-        } else {
-            System.out.println("No se puede realizar el pago. No se ha retirado ningún monto.");
+    private void actualizarDeuda() {
+        deuda = saldo + (saldo * tasaInteres);
+    }
+
+    @Override
+    public void consignar(double cantidad) {
+        saldo += cantidad;
+        actualizarDeuda();
+    }
+
+    @Override
+    public void retirar(double cantidad) throws BancoException {
+        if (cantidad <= 0) {
+            throw new BancoException("La cantidad a retirar debe ser mayor que cero.");
         }
+        if (cantidad > saldo) {
+            throw new BancoException("No se puede retirar una cantidad mayor que el saldo disponible.");
+        }
+        saldo -= cantidad;
     }
-
-    @Override
-    public void procesarTransaccion(Transaccion transaccion) {
-        // Implementación específica de procesamiento de transacción para la tarjeta de crédito
-        // Aquí puedes agregar lógica para procesar transacciones relacionadas con la tarjeta de crédito
+    
+    public void setDeuda(double deuda) {
+        this.deuda = deuda;
     }
-
-    @Override
+    
+	@Override
     public String toString() {
-        return "\n" +
-               "Tarjeta de Crédito\n" +
-               "Límite de crédito: $" + limiteCredito + "\n" +
-               "Tasa de interés: " + tasaInteres * 100 + "%\n" +
-               "Saldo: $" + getSaldo();
+        return "Tarjeta de Crédito\n" +
+               "Saldo: " + saldo + "\n" +
+               "Tasa de interés: " + tasaInteres + "\n" +
+               "Deuda: " + deuda + "\n";
+    }
+
+	@Override
+    public void transferirACuenta(ProductoFinanciero cuentaDestino, double cantidad) throws BancoException {
+        if (cantidad <= 0) {
+            throw new BancoException("La cantidad a transferir debe ser mayor que cero.");
+        }
+        if (saldo < cantidad) {
+            throw new BancoException("No hay suficiente saldo en la tarjeta de crédito para realizar la transferencia.");
+        }
+
+        // Retirar saldo de la tarjeta de crédito
+        this.retirar(cantidad);
+        // Consignar saldo en la cuenta destino
+        cuentaDestino.consignar(cantidad);
     }
 }

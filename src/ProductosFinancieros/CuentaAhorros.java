@@ -1,77 +1,53 @@
 package ProductosFinancieros;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import Excepciones.BancoException;
+import LogicaBanco.Cliente;
 import LogicaBanco.ProductoFinanciero;
-import LogicaBanco.Transaccion;
-import TiposTransaccion.Consignacion;
-import TiposTransaccion.Retiro;
 
 public class CuentaAhorros extends ProductoFinanciero {
     private double tasaInteres;
-    private List<Transaccion> transacciones;
 
-    public CuentaAhorros(int numeroCuenta, double saldoInicial, double tasaInteres) {
-        super(numeroCuenta, saldoInicial);
+    public CuentaAhorros(Cliente cliente, double saldoInicial, double tasaInteres) {
+        super(cliente, saldoInicial);
         this.tasaInteres = tasaInteres;
-        this.transacciones = new ArrayList<>();
     }
 
     public double getTasaInteres() {
         return tasaInteres;
     }
 
-    public List<Transaccion> getTransacciones() {
-        return Collections.unmodifiableList(transacciones);
+    @Override
+    public void consignar(double cantidad) {
+        if (cantidad > 0) {
+            saldo += cantidad;
+            System.out.println("Se ha consignado $" + cantidad + " a la cuenta Ahorros.");
+        } else {
+            System.out.println("La cantidad a consignar debe ser mayor que cero.");
+        }
     }
 
-    public void agregarTransaccion(Transaccion transaccion) {
-        transacciones.add(transaccion);
-    }
-    
-    public void retirar(double monto) {
-        if (monto <= 0) {
-            System.out.println("El monto a retirar debe ser mayor que cero.");
-            return;
-        }
-        if (monto > getSaldo()) {
-            System.out.println("El monto a retirar excede el saldo disponible en la cuenta de ahorros.");
-            return;
-        }
-        setSaldo(getSaldo() - monto);
-        System.out.println("Se ha retirado $" + monto + " de la cuenta de ahorros.");
-    }
 
     @Override
-    public void procesarTransaccion(Transaccion transaccion) {
-        if (transaccion instanceof Consignacion) {
-            Consignacion consignacion = (Consignacion) transaccion;
-            double montoConsignado = consignacion.getMonto();
-            this.saldo += montoConsignado;
-            agregarTransaccion(transaccion);
-            System.out.println("Se ha consignado $" + montoConsignado + " en la cuenta de ahorros. Nuevo saldo: $" + this.saldo);
-        } else if (transaccion instanceof Retiro) {
-            Retiro retiro = (Retiro) transaccion;
-            double montoRetirado = retiro.getMonto();
-            if (montoRetirado <= this.saldo) {
-                this.saldo -= montoRetirado;
-                agregarTransaccion(transaccion);
-                System.out.println("Se ha retirado $" + montoRetirado + " de la cuenta de ahorros. Nuevo saldo: $" + this.saldo);
-            } else {
-                System.out.println("Error: Saldo insuficiente para realizar el retiro.");
-            }
+    public void retirar(double cantidad) {
+        if (cantidad > 0 && cantidad <= saldo) {
+            saldo -= cantidad;
+            System.out.println("Se ha retirado $" + cantidad + " de la Cuenta Ahorros.");
         } else {
-            System.out.println("Tipo de transacción no válida para la cuenta de ahorros.");
+            System.out.println("No es posible retirar esa cantidad de la Cuenta Ahorros.");
         }
     }
+
 
     @Override
     public String toString() {
-        return "\n" +
-               "Cuenta de Ahorros:\n" +
-               "Saldo: $" + getSaldo() + "\n" +
-               "Tasa de interés: " + (tasaInteres * 100) + "%";
+        return "Cuenta de Ahorros\n" +
+               "Saldo: " + saldo + "\n" +
+               "Tasa de interés: " + tasaInteres + "\n";
     }
+
+	@Override
+	public void transferirACuenta(ProductoFinanciero cuentaDestino, double cantidad) throws BancoException {
+		// TODO Auto-generated method stub
+		
+	}
 }
