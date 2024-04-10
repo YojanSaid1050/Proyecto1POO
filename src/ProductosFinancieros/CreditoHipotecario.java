@@ -68,9 +68,7 @@ public class CreditoHipotecario extends ProductoFinanciero {
             throw new BancoException("No hay suficiente saldo en el crédito hipotecario para realizar la transferencia.");
         }
 
-        // Realizar la transferencia al producto financiero destino
         destino.consignar(cantidad);
-        // Actualizar el saldo del crédito hipotecario
         this.saldo -= cantidad;
     }
 

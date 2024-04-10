@@ -58,10 +58,13 @@ public class Interfaz {
                     	logicaInterfaz.transferirSaldoEntreCuentas(scanner);
                     	break;
                     case 8:
+                    	logicaInterfaz.mostrarTransaccionesCliente(scanner);
+                    	break;
+                    case 9:
                         ArchivoTextoPlano.guardarClientesCSV(NOMBRE_ARCHIVO, banco.getClientes());
                         System.out.println("Información del banco guardada exitosamente en el archivo " + NOMBRE_ARCHIVO);
                         break;
-                    case 9:
+                    case 10:
                         banco.getClientes().addAll(ArchivoTextoPlano.cargarClientesCSV(NOMBRE_ARCHIVO));
                         System.out.println("Información del banco cargada exitosamente desde el archivo " + NOMBRE_ARCHIVO);
                         break;

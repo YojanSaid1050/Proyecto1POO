@@ -44,9 +44,16 @@ public class CuentaCorriente extends ProductoFinanciero {
                "Sobregiro permitido: " + sobregiroPermitido + "\n";
     }
 
-	@Override
-	public void transferirACuenta(ProductoFinanciero cuentaDestino, double cantidad) throws BancoException {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void transferirACuenta(ProductoFinanciero cuentaDestino, double cantidad) throws BancoException {
+        if (cantidad <= 0) {
+            throw new BancoException("La cantidad a transferir debe ser mayor que cero.");
+        }
+        if (saldo < cantidad) {
+            throw new BancoException("No hay suficiente saldo en la tarjeta de crédito para realizar la transferencia.");
+        }
+
+        this.retirar(cantidad);
+        cuentaDestino.consignar(cantidad);
+    }
 }

@@ -69,9 +69,7 @@ public class TarjetaCredito extends ProductoFinanciero {
             throw new BancoException("No hay suficiente saldo en la tarjeta de crédito para realizar la transferencia.");
         }
 
-        // Retirar saldo de la tarjeta de crédito
         this.retirar(cantidad);
-        // Consignar saldo en la cuenta destino
         cuentaDestino.consignar(cantidad);
     }
 }

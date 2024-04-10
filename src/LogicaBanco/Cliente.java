@@ -10,7 +10,7 @@ public class Cliente {
     private int numIdentificacion;
     private long numTelefono;
     private List<ProductoFinanciero> productos;
-    private List<String> transacciones; // Lista para almacenar transacciones
+    private List<String> transacciones;
 
     public Cliente(int id, String nombre, String apellido, int numIdentificacion, long numTelefono) {
         this.id = id;
@@ -19,7 +19,7 @@ public class Cliente {
         this.numIdentificacion = numIdentificacion;
         this.numTelefono = numTelefono;
         this.productos = new ArrayList<>();
-        this.transacciones = new ArrayList<>(); // Inicializar la lista de transacciones
+        this.transacciones = new ArrayList<>();
     }
 
     public int getId() {
@@ -61,12 +61,10 @@ public class Cliente {
         return productos;
     }
 
-    // Método para agregar una transacción a la lista
     public void agregarTransaccion(String transaccion) {
         transacciones.add(transaccion);
     }
 
-    // Método para obtener todas las transacciones
     public List<String> getTransacciones() {
         return transacciones;
     }

@@ -34,7 +34,6 @@ public class AgregarProductoFinanciero {
             System.out.print("Opción: ");
             int opcion = scanner.nextInt();
 
-            // Verificar si el cliente ya tiene un producto financiero de este tipo
             switch (opcion) {
                 case 1:
                     if (cliente.tieneProductoFinanciero(CuentaAhorros.class)) {

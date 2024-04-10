@@ -119,6 +119,7 @@ public class LogicaInterfaz {
             scanner.nextLine(); // Limpiar el buffer de entrada
 
             producto.consignar(cantidad);
+            cliente.agregarTransaccion("Consignación de $" + cantidad + " en " + producto);
             System.out.println("Se ha consignado exitosamente $" + cantidad + " en el producto financiero " + producto + " de " + cliente.getNombre() + " " + cliente.getApellido());
         } catch (InputMismatchException e) {
             System.out.println("Error: Ingrese un valor válido.");
@@ -165,6 +166,7 @@ public class LogicaInterfaz {
             scanner.nextLine(); // Limpiar el buffer de entrada
 
             producto.retirar(cantidad);
+            cliente.agregarTransaccion("Retiro de $" + cantidad + " en " + producto);
             System.out.println("Se ha retirado exitosamente $" + cantidad + " del producto financiero " + producto + " de " + cliente.getNombre() + " " + cliente.getApellido());
         } catch (InputMismatchException e) {
             System.out.println("Error: Ingrese un valor válido.");
@@ -174,6 +176,79 @@ public class LogicaInterfaz {
         }
     }
 
+    public void transferirSaldoEntreCuentas(Scanner scanner) {
+        try {
+            System.out.println("Transferencia de saldo entre cuentas del mismo cliente");
+
+            // Solicitar ID del cliente
+            System.out.print("Ingrese el ID del cliente: ");
+            int idCliente = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer de entrada
+
+            // Obtener el cliente
+            Cliente cliente = buscarClientePorID(idCliente);
+            if (cliente == null) {
+                throw new BancoException("No se encontró ningún cliente con el ID proporcionado.");
+            }
+            if (cliente.getProductosFinancieros().isEmpty()) {
+                throw new BancoException("El cliente no tiene productos financieros para realizar la transferencia.");
+            }
+
+            // Mostrar los productos financieros del cliente
+            System.out.println("Seleccione el producto financiero del cliente " + cliente.getNombre() + " " + cliente.getApellido() + ":");
+            List<ProductoFinanciero> productos = cliente.getProductosFinancieros();
+            for (int i = 0; i < productos.size(); i++) {
+                ProductoFinanciero producto = productos.get(i);
+                System.out.println((i + 1) + ". " + producto);
+            }
+            System.out.print("Ingrese el número correspondiente al producto financiero de origen: ");
+            int indiceProductoOrigen = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer de entrada
+            if (indiceProductoOrigen < 1 || indiceProductoOrigen > productos.size()) {
+                throw new BancoException("El número de producto seleccionado no es válido.");
+            }
+            ProductoFinanciero productoOrigen = productos.get(indiceProductoOrigen - 1);
+
+            // Solicitar el número del producto financiero destino
+            System.out.print("Ingrese el número correspondiente al producto financiero de destino: ");
+            int indiceProductoDestino = scanner.nextInt();
+            scanner.nextLine(); // Limpiar el buffer de entrada
+            if (indiceProductoDestino < 1 || indiceProductoDestino > productos.size()) {
+                throw new BancoException("El número de producto seleccionado no es válido.");
+            }
+            ProductoFinanciero productoDestino = productos.get(indiceProductoDestino - 1);
+
+            // Verificar que los productos financieros sean diferentes
+            if (productoOrigen.equals(productoDestino)) {
+                throw new BancoException("No se puede transferir saldo entre el mismo producto financiero.");
+            }
+
+            // Realizar la transferencia de saldo
+            System.out.println("Saldo disponible en la cuenta origen: $" + productoOrigen.consultarSaldo());
+            System.out.print("Ingrese la cantidad a transferir: ");
+            double cantidad = scanner.nextDouble();
+            scanner.nextLine(); // Limpiar el buffer de entrada
+
+            if (cantidad <= 0) {
+                throw new BancoException("La cantidad a transferir debe ser mayor que cero.");
+            }
+
+            if (productoOrigen.consultarSaldo() < cantidad) {
+                throw new BancoException("No hay suficiente saldo en la cuenta de origen para realizar la transferencia.");
+            }
+
+            productoOrigen.transferir(productoDestino, cantidad);
+            cliente.agregarTransaccion("Transferencia de $" + cantidad + " de " + productoOrigen + " a " + productoDestino);
+            System.out.println("Se ha transferido exitosamente $" + cantidad + " del producto financiero " + productoOrigen +
+                    " al producto financiero " + productoDestino + " del cliente " + cliente.getNombre() + " " + cliente.getApellido());
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Ingrese un valor válido.");
+            scanner.nextLine(); // Limpiar el buffer de entrada
+        } catch (BancoException e) {
+            System.out.println("Error al realizar la transferencia: " + e.getMessage());
+        }
+    }
+    
     public void transferirSaldoEntreClientes(Scanner scanner) throws BancoException {
         try {
             System.out.println("Transferencia de saldo entre clientes");
@@ -251,83 +326,43 @@ public class LogicaInterfaz {
             }
 
             productoOrigen.transferir(productoDestino, cantidad);
+            origen.agregarTransaccion("Transferencia de $" + cantidad + " a " + destino.getNombre() + " " + destino.getApellido());
+            destino.agregarTransaccion("Transferencia de $" + cantidad + " de " + origen.getNombre() + " " + origen.getApellido());
             System.out.println("Se ha transferido exitosamente $" + cantidad + " del cliente " + origen.getNombre() + " " + origen.getApellido() +
                     " al cliente " + destino.getNombre() + " " + destino.getApellido());
         } catch (InputMismatchException e) {
             throw new BancoException("Error: Ingrese un valor válido.");
         }
     }
-    public void transferirSaldoEntreCuentas(Scanner scanner) {
+    
+    public void mostrarTransaccionesCliente(Scanner scanner) {
         try {
-            System.out.println("Transferencia de saldo entre cuentas del mismo cliente");
-
-            // Solicitar ID del cliente
-            System.out.print("Ingrese el ID del cliente: ");
+            System.out.println("Ingrese el ID del cliente del cual desea ver las transacciones: ");
             int idCliente = scanner.nextInt();
             scanner.nextLine(); // Limpiar el buffer de entrada
-
-            // Obtener el cliente
+            
             Cliente cliente = buscarClientePorID(idCliente);
             if (cliente == null) {
                 throw new BancoException("No se encontró ningún cliente con el ID proporcionado.");
             }
-            if (cliente.getProductosFinancieros().isEmpty()) {
-                throw new BancoException("El cliente no tiene productos financieros para realizar la transferencia.");
-            }
 
-            // Mostrar los productos financieros del cliente
-            System.out.println("Seleccione el producto financiero del cliente " + cliente.getNombre() + " " + cliente.getApellido() + ":");
-            List<ProductoFinanciero> productos = cliente.getProductosFinancieros();
-            for (int i = 0; i < productos.size(); i++) {
-                ProductoFinanciero producto = productos.get(i);
-                System.out.println((i + 1) + ". " + producto);
+            List<String> transacciones = cliente.getTransacciones();
+            if (transacciones.isEmpty()) {
+                System.out.println("El cliente no ha realizado ninguna transacción.");
+            } else {
+                System.out.println("Transacciones del cliente " + cliente.getNombre() + " " + cliente.getApellido() + ":");
+                for (String transaccion : transacciones) {
+                    System.out.println(transaccion);
+                }
             }
-            System.out.print("Ingrese el número correspondiente al producto financiero de origen: ");
-            int indiceProductoOrigen = scanner.nextInt();
-            scanner.nextLine(); // Limpiar el buffer de entrada
-            if (indiceProductoOrigen < 1 || indiceProductoOrigen > productos.size()) {
-                throw new BancoException("El número de producto seleccionado no es válido.");
-            }
-            ProductoFinanciero productoOrigen = productos.get(indiceProductoOrigen - 1);
-
-            // Solicitar el número del producto financiero destino
-            System.out.print("Ingrese el número correspondiente al producto financiero de destino: ");
-            int indiceProductoDestino = scanner.nextInt();
-            scanner.nextLine(); // Limpiar el buffer de entrada
-            if (indiceProductoDestino < 1 || indiceProductoDestino > productos.size()) {
-                throw new BancoException("El número de producto seleccionado no es válido.");
-            }
-            ProductoFinanciero productoDestino = productos.get(indiceProductoDestino - 1);
-
-            // Verificar que los productos financieros sean diferentes
-            if (productoOrigen.equals(productoDestino)) {
-                throw new BancoException("No se puede transferir saldo entre el mismo producto financiero.");
-            }
-
-            // Realizar la transferencia de saldo
-            System.out.println("Saldo disponible en la cuenta origen: $" + productoOrigen.consultarSaldo());
-            System.out.print("Ingrese la cantidad a transferir: ");
-            double cantidad = scanner.nextDouble();
-            scanner.nextLine(); // Limpiar el buffer de entrada
-
-            if (cantidad <= 0) {
-                throw new BancoException("La cantidad a transferir debe ser mayor que cero.");
-            }
-
-            if (productoOrigen.consultarSaldo() < cantidad) {
-                throw new BancoException("No hay suficiente saldo en la cuenta de origen para realizar la transferencia.");
-            }
-
-            productoOrigen.transferir(productoDestino, cantidad);
-            System.out.println("Se ha transferido exitosamente $" + cantidad + " del producto financiero " + productoOrigen +
-                    " al producto financiero " + productoDestino + " del cliente " + cliente.getNombre() + " " + cliente.getApellido());
         } catch (InputMismatchException e) {
             System.out.println("Error: Ingrese un valor válido.");
             scanner.nextLine(); // Limpiar el buffer de entrada
         } catch (BancoException e) {
-            System.out.println("Error al realizar la transferencia: " + e.getMessage());
+            System.out.println("Error al mostrar transacciones: " + e.getMessage());
         }
     }
+
 
     private Cliente buscarClientePorID(int id) {
         for (Cliente cliente : banco.getClientes()) {
