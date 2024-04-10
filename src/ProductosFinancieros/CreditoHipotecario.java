@@ -54,7 +54,7 @@ public class CreditoHipotecario extends ProductoFinanciero {
     @Override
     public String toString() {
         return "Crédito Hipotecario\n" +
-               "Saldo: " + saldo + "\n" +
+               "Préstamo: " + saldo + "\n" +
                "Tasa de interés: " + tasaInteres + "\n"+
                "Deuda: " + deuda + "\n";
     }

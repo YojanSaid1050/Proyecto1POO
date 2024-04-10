@@ -34,12 +34,12 @@ public class AgregarProductoFinanciero {
             System.out.print("Opción: ");
             int opcion = scanner.nextInt();
 
-            if (cliente.getProductosFinancieros().size() > 0) {
-                throw new Exception("El cliente ya tiene un producto financiero de este tipo");
-            }
-
+            // Verificar si el cliente ya tiene un producto financiero de este tipo
             switch (opcion) {
                 case 1:
+                    if (cliente.tieneProductoFinanciero(CuentaAhorros.class)) {
+                        throw new BancoException("El cliente ya tiene una cuenta de ahorros");
+                    }
                     System.out.print("Ingrese el saldo inicial de la cuenta de ahorros: ");
                     double saldoInicialAhorros = scanner.nextDouble();
                     System.out.print("Ingrese la tasa de interés de la cuenta de ahorros: ");
@@ -47,6 +47,9 @@ public class AgregarProductoFinanciero {
                     cliente.agregarProducto(new CuentaAhorros(cliente, saldoInicialAhorros, tasaInteresAhorros));
                     break;
                 case 2:
+                    if (cliente.tieneProductoFinanciero(CuentaCorriente.class)) {
+                        throw new BancoException("El cliente ya tiene una cuenta corriente");
+                    }
                     System.out.print("Ingrese el saldo inicial de la cuenta corriente: ");
                     double saldoInicialCorriente = scanner.nextDouble();
                     System.out.print("Ingrese el sobregiro permitido de la cuenta corriente: ");
@@ -54,6 +57,9 @@ public class AgregarProductoFinanciero {
                     cliente.agregarProducto(new CuentaCorriente(cliente, saldoInicialCorriente, sobregiroCorriente));
                     break;
                 case 3:
+                    if (cliente.tieneProductoFinanciero(CreditoHipotecario.class)) {
+                        throw new BancoException("El cliente ya tiene un crédito hipotecario");
+                    }
                     System.out.print("Ingrese el monto del préstamo del crédito hipotecario: ");
                     double montoHipotecario = scanner.nextDouble();
                     if (montoHipotecario <= 0) {
@@ -64,6 +70,9 @@ public class AgregarProductoFinanciero {
                     cliente.agregarProducto(new CreditoHipotecario(cliente, montoHipotecario, tasaInteresHipotecario));
                     break;
                 case 4:
+                    if (cliente.tieneProductoFinanciero(CreditoLibreInversion.class)) {
+                        throw new BancoException("El cliente ya tiene un crédito de libre inversión");
+                    }
                     System.out.print("Ingrese el monto del préstamo del crédito de libre inversión: ");
                     double montoLibreInversion = scanner.nextDouble();
                     if (montoLibreInversion <= 0) {
@@ -74,11 +83,17 @@ public class AgregarProductoFinanciero {
                     cliente.agregarProducto(new CreditoLibreInversion(cliente, montoLibreInversion, tasaInteresLibreInversion));
                     break;
                 case 5:
+                    if (cliente.tieneProductoFinanciero(TarjetaDebito.class)) {
+                        throw new BancoException("El cliente ya tiene una tarjeta de débito");
+                    }
                     System.out.print("Ingrese el saldo inicial de la tarjeta de débito: ");
                     double saldoInicialDebito = scanner.nextDouble();
                     cliente.agregarProducto(new TarjetaDebito(cliente, saldoInicialDebito));
                     break;
                 case 6:
+                    if (cliente.tieneProductoFinanciero(TarjetaCredito.class)) {
+                        throw new BancoException("El cliente ya tiene una tarjeta de crédito");
+                    }
                     System.out.print("Ingrese el saldo de la tarjeta de crédito: ");
                     double saldoCredito = scanner.nextDouble();
                     if (saldoCredito <= 0) {

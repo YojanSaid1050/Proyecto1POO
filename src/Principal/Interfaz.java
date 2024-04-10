@@ -4,6 +4,8 @@ import LogicaBanco.*;
 import Persistencia.ArchivoTextoPlano;
 import java.util.Scanner;
 
+import Excepciones.BancoException;
+
 public class Interfaz {
     private Banco banco;
     private LogicaInterfaz logicaInterfaz;
@@ -15,7 +17,7 @@ public class Interfaz {
         new ArchivoTextoPlano();
     }
 
-    public void mostrarMenu() {
+    public void mostrarMenu() throws BancoException {
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
                 System.out.println("Seleccione una opción:");
@@ -25,8 +27,9 @@ public class Interfaz {
                 System.out.println("4. Consignar");
                 System.out.println("5. Retirar");
                 System.out.println("6. Transferir entre clientes");
-                System.out.println("7. Guardar información del banco en archivo");
-                System.out.println("8. Cargar información del banco desde archivo");
+                System.out.println("7. Transferir entre cuentas del mismo cliente");
+                System.out.println("8. Guardar información del banco en archivo");
+                System.out.println("9. Cargar información del banco desde archivo");
                 System.out.println("0. Salir");
 
                 int opcion = scanner.nextInt();
@@ -52,10 +55,13 @@ public class Interfaz {
                         logicaInterfaz.transferirSaldoEntreClientes(scanner);
                         break;
                     case 7:
+                    	logicaInterfaz.transferirSaldoEntreCuentas(scanner);
+                    	break;
+                    case 8:
                         ArchivoTextoPlano.guardarClientesCSV(NOMBRE_ARCHIVO, banco.getClientes());
                         System.out.println("Información del banco guardada exitosamente en el archivo " + NOMBRE_ARCHIVO);
                         break;
-                    case 8:
+                    case 9:
                         banco.getClientes().addAll(ArchivoTextoPlano.cargarClientesCSV(NOMBRE_ARCHIVO));
                         System.out.println("Información del banco cargada exitosamente desde el archivo " + NOMBRE_ARCHIVO);
                         break;
@@ -70,7 +76,7 @@ public class Interfaz {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws BancoException {
         Banco banco = new Banco();
         Interfaz interfaz = new Interfaz(banco);
 

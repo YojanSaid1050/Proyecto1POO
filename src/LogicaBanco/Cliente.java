@@ -10,6 +10,7 @@ public class Cliente {
     private int numIdentificacion;
     private long numTelefono;
     private List<ProductoFinanciero> productos;
+    private List<String> transacciones; // Lista para almacenar transacciones
 
     public Cliente(int id, String nombre, String apellido, int numIdentificacion, long numTelefono) {
         this.id = id;
@@ -18,6 +19,7 @@ public class Cliente {
         this.numIdentificacion = numIdentificacion;
         this.numTelefono = numTelefono;
         this.productos = new ArrayList<>();
+        this.transacciones = new ArrayList<>(); // Inicializar la lista de transacciones
     }
 
     public int getId() {
@@ -41,13 +43,34 @@ public class Cliente {
     }
 
     public void agregarProducto(ProductoFinanciero producto) {
-        productos.add(producto);
+        if (!productos.contains(producto)) {
+            productos.add(producto);
+        }
     }
 
+    public boolean tieneProductoFinanciero(Class<? extends ProductoFinanciero> tipoProducto) {
+        for (ProductoFinanciero producto : productos) {
+            if (tipoProducto.isInstance(producto)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public List<ProductoFinanciero> getProductosFinancieros() {
         return productos;
     }
-    
+
+    // Método para agregar una transacción a la lista
+    public void agregarTransaccion(String transaccion) {
+        transacciones.add(transaccion);
+    }
+
+    // Método para obtener todas las transacciones
+    public List<String> getTransacciones() {
+        return transacciones;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

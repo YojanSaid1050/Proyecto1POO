@@ -69,7 +69,7 @@ public class CreditoLibreInversion extends ProductoFinanciero {
     @Override
     public String toString() {
         return "Crédito de Libre Inversión\n" +
-               "Saldo: " + saldo + "\n" +
+               "Préstamo: " + saldo + "\n" +
                "Tasa de interés: " + tasaInteres + "\n" +
                "Deuda: " + deuda +"\n";
     }
